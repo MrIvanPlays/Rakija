@@ -1,0 +1,9 @@
+{
+  "loggingFormat": "[HH:mm:ss] [%level]: %msg",
+  "logFileDirectory": "./logs/",
+  "timeDateFormat": "HH:mm:ss",
+  "disabledLevels": [
+    "debug",
+    "trace"
+  ]
+}

@@ -1,0 +1,7 @@
+.gradle/
+build/
+out
+.idea/
+logs/
+prefixes.json
+src/main/resources/config.json
