@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compile 'com.mrivanplays:yalifslf4j:1.0-SNAPSHOT'
-    compile ('net.dv8tion:JDA:4.0.0_62') {
+    compile ('net.dv8tion:JDA:4.0.0_63') {
         exclude module: 'slf4j-api'
     }
     compile ('com.jagrosh:jda-utilities:3.0.2') {

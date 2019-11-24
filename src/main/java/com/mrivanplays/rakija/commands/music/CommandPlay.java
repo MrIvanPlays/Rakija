@@ -69,6 +69,17 @@ public class CommandPlay extends Command
                 return false;
             }
         }
+        else
+        {
+            if (!audioManager.getConnectedChannel().equals(context.getMember().getVoiceState().getChannel()))
+            {
+                context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor())
+                        .setDescription("You should be in the same voice channel with the bot in order to perform this command.").build())
+                        .queue(msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+                context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+                return true;
+            }
+        }
         PlayerManager playerManager = bot.getPlayerManager();
         GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
         if (args.size() == 0)
