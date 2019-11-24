@@ -39,77 +39,70 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("userinfo (user mention|user id)")
 @CommandDescription(
-    "Shows various data about the user, who have run the command, or if arguments specified, the user mentioned/user with the specified id")
-public class CommandUserInfo extends Command {
+        "Shows various data about the user, who have run the command, or if arguments specified, the user mentioned/user with the specified id")
+public class CommandUserInfo extends Command
+{
 
-  public CommandUserInfo() {
-    super("userinfo");
-  }
+    public CommandUserInfo()
+    {
+        super("userinfo");
+    }
 
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    args.next(ArgumentResolvers.USER)
-        .ifPresent(
-            user -> {
-              Member member = context.getGuild().getMember(user);
-              if (member == null) {
-                context
-                    .getChannel()
-                    .sendMessage(
-                        EmbedUtil.errorEmbed(context.getAuthor())
-                            .setDescription("That user isn't in this server!")
-                            .build())
-                    .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        args.next(ArgumentResolvers.USER).ifPresent(user ->
+        {
+            Member member = context.getGuild().getMember(user);
+            if (member == null)
+            {
+                context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor())
+                        .setDescription("That user isn't in this server!").build())
+                        .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
                 context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
                 return;
-              }
-              context.getChannel().sendMessage(gatherUserInfo(member, user).build()).queue();
-            })
-        .orElse(
-            failReason -> {
-              if (failReason == FailReason.ARGUMENT_NOT_TYPED) {
-                context
-                    .getChannel()
-                    .sendMessage(gatherUserInfo(context.getMember(), context.getAuthor()).build())
-                    .queue();
+            }
+            context.getChannel().sendMessage(gatherUserInfo(member, user).build()).queue();
+        }).orElse(failReason ->
+        {
+            if (failReason == FailReason.ARGUMENT_NOT_TYPED)
+            {
+                context.getChannel().sendMessage(gatherUserInfo(context.getMember(), context.getAuthor()).build()).queue();
                 return;
-              }
-              if (failReason == FailReason.ARGUMENT_PARSED_NOT_TYPE) {
-                context
-                    .getChannel()
-                    .sendMessage(
-                        EmbedUtil.errorEmbed(context.getAuthor())
-                            .setDescription("Invalid user")
-                            .build())
-                    .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
+            }
+            if (failReason == FailReason.ARGUMENT_PARSED_NOT_TYPE)
+            {
+                context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor()).setDescription("Invalid user").build())
+                        .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
                 context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-              }
-            });
-    return true;
-  }
+            }
+        });
+        return true;
+    }
 
-  private EmbedBuilder gatherUserInfo(Member member, User user) {
-    return EmbedUtil.defaultEmbed()
-        .setColor(member.getColor())
-        .setThumbnail(user.getEffectiveAvatarUrl().replaceFirst("gif", "png"))
-        .addField("Username#Discriminator", String.format("%#s", user), false)
-        .addField("DisplayName", member.getEffectiveName(), false)
-        .addField(
-            "User Id + Mention",
-            String.format("%s (%s)", user.getId(), member.getAsMention()),
-            true)
-        .addField(
-            "Account Created",
-            user.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-            true)
-        .addField(
-            "Server Joined",
-            member.getTimeJoined().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-            true)
-        .addField(
-            "Online Status",
-            member.getOnlineStatus().name().toLowerCase().replaceAll("_", " "),
-            true)
-        .addField("Bot Account", user.isBot() ? "Yes" : "No", true);
-  }
+    private EmbedBuilder gatherUserInfo(Member member, User user)
+    {
+        return EmbedUtil.defaultEmbed()
+                .setColor(member.getColor())
+                .setThumbnail(user.getEffectiveAvatarUrl().replaceFirst("gif", "png"))
+                .addField("Username#Discriminator", String.format("%#s", user), false)
+                .addField("DisplayName", member.getEffectiveName(), false)
+                .addField(
+                        "User Id + Mention",
+                        String.format("%s (%s)", user.getId(), member.getAsMention()),
+                        true)
+                .addField(
+                        "Account Created",
+                        user.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        true)
+                .addField(
+                        "Server Joined",
+                        member.getTimeJoined().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        true)
+                .addField(
+                        "Online Status",
+                        member.getOnlineStatus().name().toLowerCase().replaceAll("_", " "),
+                        true)
+                .addField("Bot Account", user.isBot() ? "Yes" : "No", true);
+    }
 }

@@ -34,90 +34,71 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Makes the bot leave your channel")
 @CommandUsage("leave")
 @CommandAliases("l|q|quit|disconnect|d")
-public class CommandLeave extends Command {
+public class CommandLeave extends Command
+{
 
-  private Bot bot;
+    private Bot bot;
 
-  public CommandLeave(Bot bot) {
-    super("leave");
-    this.bot = bot;
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    AudioManager audioManager = context.getGuild().getAudioManager();
-    User author = context.getAuthor();
-    Member member = context.getMember();
-
-    if (!audioManager.isConnected()) {
-      channel
-          .sendMessage(
-              EmbedUtil.errorEmbed(author)
-                  .setTitle("Error")
-                  .setDescription("I'm not connected to a voice channel")
-                  .build())
-          .complete()
-          .delete()
-          .queueAfter(15, TimeUnit.SECONDS);
-      context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-      return false;
+    public CommandLeave(Bot bot)
+    {
+        super("leave");
+        this.bot = bot;
     }
 
-    VoiceChannel voiceChannel = audioManager.getConnectedChannel();
-    List<Member> channelMembers = new ArrayList<>(voiceChannel.getMembers());
-    channelMembers.remove(context.getGuild().getSelfMember());
-    if (!channelMembers.contains(context.getMember())) {
-      channel
-          .sendMessage(
-              EmbedUtil.errorEmbed(author)
-                  .setTitle("Error")
-                  .setDescription("You have to be in the same channel as me to use this command!")
-                  .build())
-          .complete()
-          .delete()
-          .queueAfter(15, TimeUnit.SECONDS);
-      context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-      return false;
-    }
-    if (channelMembers.size() > 1) {
-      Role dj = context.getGuild().getRolesByName("DJ", true).get(0);
-      if (dj == null) {
-        context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
-      }
-      if (!member.getRoles().contains(dj)) {
-        channel
-            .sendMessage(
-                EmbedUtil.errorEmbed(author)
-                    .setTitle("Error")
-                    .setDescription(
-                        "You need to have the DJ role to be able to do that (being alone with the bot also works)")
-                    .build())
-            .queue();
-        return false;
-      }
-    }
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        AudioManager audioManager = context.getGuild().getAudioManager();
+        User author = context.getAuthor();
+        Member member = context.getMember();
 
-    audioManager.closeAudioConnection();
-    bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getPlayer().stopTrack();
-    bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getScheduler().getQueue().clear();
-    channel
-        .sendMessage(
-            EmbedUtil.successEmbed(author)
-                .setDescription("Disconnected from your channel")
-                .build())
-        .queue();
-    return true;
-  }
+        if (!audioManager.isConnected())
+        {
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                    .setDescription("I'm not connected to a voice channel")
+                    .build()).complete().delete().queueAfter(15, TimeUnit.SECONDS);
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+            return false;
+        }
+
+        VoiceChannel voiceChannel = audioManager.getConnectedChannel();
+        List<Member> channelMembers = new ArrayList<>(voiceChannel.getMembers());
+        channelMembers.remove(context.getGuild().getSelfMember());
+        if (!channelMembers.contains(context.getMember()))
+        {
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                    .setDescription("You have to be in the same channel as me to use this command!").build())
+                    .complete().delete().queueAfter(15, TimeUnit.SECONDS);
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+            return false;
+        }
+        if (channelMembers.size() > 1)
+        {
+            Role dj = context.getGuild().getRolesByName("DJ", true).get(0);
+            if (dj == null)
+            {
+                context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
+            }
+            if (!member.getRoles().contains(dj))
+            {
+                channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                        .setDescription("You need to have the DJ role to be able to do that (being alone with the bot also works)")
+                        .build()).queue();
+                return false;
+            }
+        }
+
+        audioManager.closeAudioConnection();
+        bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getPlayer().stopTrack();
+        bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getScheduler().getQueue().clear();
+        return true;
+    }
 }

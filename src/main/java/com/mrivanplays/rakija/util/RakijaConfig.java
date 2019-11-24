@@ -22,34 +22,41 @@
 */
 package com.mrivanplays.rakija.util;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mrivanplays.rakija.Bot;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class RakijaConfig {
+public class RakijaConfig
+{
 
-  private final JsonObject object;
+    private final ObjectNode object;
 
-  public RakijaConfig() {
-    Bot.LOGGER.info("Loading config");
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    try (Reader reader =
-        new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json"))) {
-      object = gson.fromJson(reader, JsonObject.class);
-    } catch (IOException ignored) {
-      throw new IllegalArgumentException("a");
+    public RakijaConfig()
+    {
+        Bot.LOGGER.info("Loading config");
+        try (Reader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json")))
+        {
+            object = BotUtils.JSON_MAPPER.readValue(reader, ObjectNode.class);
+            if (object == null)
+            {
+                throw new IllegalArgumentException("No config present");
+            }
+        }
+        catch (IOException ignored)
+        {
+            throw new IllegalArgumentException("a");
+        }
     }
-  }
 
-  public String getString(String member) {
-    return object.get(member).getAsString();
-  }
+    public String getString(String member)
+    {
+        return object.get(member).asText();
+    }
 
-  public int getInt(String member) {
-    return object.get(member).getAsInt();
-  }
+    public int getInt(String member)
+    {
+        return object.get(member).asInt();
+    }
 }

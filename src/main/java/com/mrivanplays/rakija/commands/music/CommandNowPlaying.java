@@ -41,49 +41,46 @@ import org.jetbrains.annotations.NotNull;
 @CommandDescription("Shows the currently playing track")
 @CommandUsage("nowplaying")
 @CommandAliases("np")
-public class CommandNowPlaying extends Command {
+public class CommandNowPlaying extends Command
+{
 
-  private Bot bot;
+    private Bot bot;
 
-  public CommandNowPlaying(Bot bot) {
-    super("nowplaying");
-    this.bot = bot;
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    PlayerManager playerManager = bot.getPlayerManager();
-    GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
-    AudioPlayer player = musicManager.getPlayer();
-    if (player.getPlayingTrack() == null) {
-      channel.sendMessage("Nothing is currently played").queue();
-      return true;
+    public CommandNowPlaying(Bot bot)
+    {
+        super("nowplaying");
+        this.bot = bot;
     }
 
-    AudioTrackInfo info = player.getPlayingTrack().getInfo();
-    channel
-        .sendMessage(
-            EmbedUtil.embedWithAuthor(context.getAuthor())
-                .setTitle("Now playing")
-                .setDescription(
-                    String.format(
-                        "[%s] (%s)\n%s %s - %s",
-                        info.title,
-                        info.uri,
-                        player.isPaused() ? "\u23F8" : "▶",
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        PlayerManager playerManager = bot.getPlayerManager();
+        GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
+        AudioPlayer player = musicManager.getPlayer();
+        if (player.getPlayingTrack() == null)
+        {
+            channel.sendMessage("Nothing is currently played").queue();
+            return true;
+        }
+
+        AudioTrackInfo info = player.getPlayingTrack().getInfo();
+        channel.sendMessage(EmbedUtil.embedWithAuthor(context.getAuthor()).setTitle("Now playing")
+                .setDescription(String.format("[%s] (%s)\n%s %s - %s",
+                        info.title, info.uri, player.isPaused() ? "\u23F8" : "▶",
                         formatTime(player.getPlayingTrack().getPosition()),
                         formatTime(player.getPlayingTrack().getDuration())))
-                .build())
-        .queue();
-    return true;
-  }
+                .build()).queue();
+        return true;
+    }
 
-  private String formatTime(long timeInMillis) {
-    long hours = timeInMillis / TimeUnit.HOURS.toMillis(1);
-    long minutes = timeInMillis / TimeUnit.MINUTES.toMillis(1);
-    long seconds = timeInMillis % TimeUnit.MINUTES.toMillis(1) / TimeUnit.SECONDS.toMillis(1);
+    private String formatTime(long timeInMillis)
+    {
+        long hours = timeInMillis / TimeUnit.HOURS.toMillis(1);
+        long minutes = timeInMillis / TimeUnit.MINUTES.toMillis(1);
+        long seconds = timeInMillis % TimeUnit.MINUTES.toMillis(1) / TimeUnit.SECONDS.toMillis(1);
 
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-  }
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }

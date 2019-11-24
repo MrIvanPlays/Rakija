@@ -44,65 +44,74 @@ import org.jetbrains.annotations.NotNull;
 @CommandDescription("Plays a song")
 @CommandUsage("play (song name or song url)")
 @CommandAliases("p")
-public class CommandPlay extends Command {
+public class CommandPlay extends Command
+{
 
-  private Bot bot;
-  private CommandSettings settings;
+    private Bot bot;
+    private CommandSettings settings;
 
-  public CommandPlay(Bot bot, CommandSettings settings) {
-    super("play");
-    this.bot = bot;
-    this.settings = settings;
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    AudioManager audioManager = context.getGuild().getAudioManager();
-    if (!audioManager.isConnected()) {
-      if (!CommandRegistrar.dispatchCommand(context, "join")) {
-        return false;
-      }
+    public CommandPlay(Bot bot, CommandSettings settings)
+    {
+        super("play");
+        this.bot = bot;
+        this.settings = settings;
     }
-    PlayerManager playerManager = bot.getPlayerManager();
-    GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
-    if (args.size() == 0) {
-      if (musicManager.getPlayer().isPaused()) {
-        musicManager.getPlayer().setPaused(false);
+
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        AudioManager audioManager = context.getGuild().getAudioManager();
+        if (!audioManager.isConnected())
+        {
+            if (!CommandRegistrar.dispatchCommand(context, "join"))
+            {
+                return false;
+            }
+        }
+        PlayerManager playerManager = bot.getPlayerManager();
+        GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
+        if (args.size() == 0)
+        {
+            if (musicManager.getPlayer().isPaused())
+            {
+                musicManager.getPlayer().setPaused(false);
+                return true;
+            }
+            else
+            {
+                String prefix = settings.getPrefixHandler().getPrefix(context.getGuild().getIdLong());
+                channel.sendMessage(EmbedUtil.errorEmbed(context.getAuthor())
+                        .setDescription("Usage: `" + prefix + "play (ytsearch:)<song name or song url>`").build())
+                        .complete().delete().queueAfter(15, TimeUnit.SECONDS);
+                context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+                return false;
+            }
+        }
+        String input = args.joinArgumentsSpace(0);
+        String newInput;
+        if (!isURL(input))
+        {
+            newInput = "ytsearch:" + input;
+        }
+        else
+        {
+            newInput = input;
+        }
+        playerManager.loadAndPlay(channel, newInput, context.getMember(), context.getAuthor());
         return true;
-      } else {
-        channel
-            .sendMessage(
-                EmbedUtil.errorEmbed(context.getAuthor())
-                    .setDescription(
-                        "Usage: `"
-                            + settings.getPrefixHandler().getPrefix(context.getGuild().getIdLong())
-                            + "play (ytsearch:)<song name or song url>`")
-                    .build())
-            .complete()
-            .delete()
-            .queueAfter(15, TimeUnit.SECONDS);
-        context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-        return false;
-      }
     }
-    String input = args.joinArgumentsSpace(0);
-    String newInput;
-    if (!isURL(input)) {
-      newInput = "ytsearch:" + input;
-    } else {
-      newInput = input;
-    }
-    playerManager.loadAndPlay(channel, newInput, context.getMember(), context.getAuthor());
-    return true;
-  }
 
-  private boolean isURL(String input) {
-    try {
-      new URL(input);
-      return true;
-    } catch (MalformedURLException e) {
-      return false;
+    private boolean isURL(String input)
+    {
+        try
+        {
+            new URL(input);
+            return true;
+        }
+        catch (MalformedURLException e)
+        {
+            return false;
+        }
     }
-  }
 }

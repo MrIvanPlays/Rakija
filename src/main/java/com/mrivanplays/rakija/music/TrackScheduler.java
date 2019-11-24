@@ -30,40 +30,48 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import net.dv8tion.jda.api.entities.Member;
 
-public class TrackScheduler extends AudioEventAdapter {
-  private final AudioPlayer player;
-  private final BlockingQueue<RequestedAudioTrack> queue;
+public class TrackScheduler extends AudioEventAdapter
+{
+    private final AudioPlayer player;
+    private final BlockingQueue<RequestedAudioTrack> queue;
 
-  public TrackScheduler(AudioPlayer player) {
-    this.player = player;
-    this.queue = new LinkedBlockingQueue<>();
-  }
-
-  public void queue(AudioTrack track, Member requester) {
-    if (!player.startTrack(track, true)) {
-      RequestedAudioTrack requestedAduioTrack =
-          new RequestedAudioTrack(track, requester.getEffectiveName());
-      queue.offer(requestedAduioTrack);
+    public TrackScheduler(AudioPlayer player)
+    {
+        this.player = player;
+        this.queue = new LinkedBlockingQueue<>();
     }
-  }
 
-  public BlockingQueue<RequestedAudioTrack> getQueue() {
-    return queue;
-  }
-
-  public boolean nextTrack() {
-    RequestedAudioTrack next = queue.poll();
-    if (next == null) {
-      return false;
+    public void queue(AudioTrack track, Member requester)
+    {
+        if (!player.startTrack(track, true))
+        {
+            RequestedAudioTrack requestedAduioTrack = new RequestedAudioTrack(track, requester.getEffectiveName());
+            queue.offer(requestedAduioTrack);
+        }
     }
-    player.startTrack(next.getTrack(), false);
-    return true;
-  }
 
-  @Override
-  public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-    if (endReason.mayStartNext) {
-      nextTrack();
+    public BlockingQueue<RequestedAudioTrack> getQueue()
+    {
+        return queue;
     }
-  }
+
+    public boolean nextTrack()
+    {
+        RequestedAudioTrack next = queue.poll();
+        if (next == null)
+        {
+            return false;
+        }
+        player.startTrack(next.getTrack(), false);
+        return true;
+    }
+
+    @Override
+    public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason)
+    {
+        if (endReason.mayStartNext)
+        {
+            nextTrack();
+        }
+    }
 }

@@ -40,45 +40,48 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows queue")
 @CommandUsage("queue")
-public class CommandQueue extends Command {
+public class CommandQueue extends Command
+{
 
-  private Bot bot;
+    private Bot bot;
 
-  public CommandQueue(Bot bot) {
-    super("queue");
-    this.bot = bot;
-  }
+    public CommandQueue(Bot bot)
+    {
+        super("queue");
+        this.bot = bot;
+    }
 
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    EmbedBuilder builder =
-        EmbedUtil.embedWithAuthor(context.getAuthor())
-            .setColor(Color.BLUE)
-            .setTitle("Showing tracks in queue");
-    GuildMusicManager musicManager =
-        bot.getPlayerManager().getGuildMusicManager(context.getGuild());
-    if (musicManager.getPlayer().getPlayingTrack() != null) {
-      AudioTrackInfo info = musicManager.getPlayer().getPlayingTrack().getInfo();
-      builder.setDescription("Now playing: " + String.format("`%s` - %s", info.title, info.uri) + "\n");
-    } else {
-      builder.setDescription("Nothing is currently playing. \n");
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        EmbedBuilder builder = EmbedUtil.embedWithAuthor(context.getAuthor()).setColor(Color.BLUE).setTitle("Showing tracks in queue");
+        GuildMusicManager musicManager = bot.getPlayerManager().getGuildMusicManager(context.getGuild());
+        if (musicManager.getPlayer().getPlayingTrack() != null)
+        {
+            AudioTrackInfo info = musicManager.getPlayer().getPlayingTrack().getInfo();
+            builder.setDescription("Now playing: " + String.format("`%s` - %s", info.title, info.uri) + "\n");
+        }
+        else
+        {
+            builder.setDescription("Nothing is currently playing. \n");
+        }
+        if (musicManager.getScheduler().getQueue().isEmpty())
+        {
+            builder.appendDescription("The queue is empty");
+            channel.sendMessage(builder.build()).queue();
+            return true;
+        }
+        builder.appendDescription("\u2B07" + " UP NEXT " + "\u2B07" + "\n");
+        int pos = 0;
+        for (RequestedAudioTrack rqTrack : musicManager.getScheduler().getQueue())
+        {
+            pos++;
+            AudioTrack track = rqTrack.getTrack();
+            String name = rqTrack.getRequester();
+            builder.appendDescription("`" + pos + ".` " + track.getInfo().title + " `|` Requested by: `" + name + "` \n");
+        }
+        channel.sendMessage(builder.build()).queue();
+        return true;
     }
-    if (musicManager.getScheduler().getQueue().isEmpty()) {
-      builder.appendDescription("The queue is empty");
-      channel.sendMessage(builder.build()).queue();
-      return true;
-    }
-    builder.appendDescription("\u2B07" + " UP NEXT " + "\u2B07" + "\n");
-    int pos = 0;
-    for (RequestedAudioTrack rqTrack : musicManager.getScheduler().getQueue()) {
-      pos++;
-      AudioTrack track = rqTrack.getTrack();
-      String name = rqTrack.getRequester();
-      builder.appendDescription(
-          "`" + pos + ".` " + track.getInfo().title + " `|` Requested by: `" + name + "` \n");
-    }
-    channel.sendMessage(builder.build()).queue();
-    return true;
-  }
 }

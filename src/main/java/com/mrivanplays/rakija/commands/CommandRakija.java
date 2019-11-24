@@ -40,78 +40,67 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Run it and see what it will do \uD83E\uDD14")
 @CommandUsage("rakija")
-public class CommandRakija extends Command {
+public class CommandRakija extends Command
+{
 
-  private EventWaiter eventWaiter;
-  private final String playSongEmoji = "\uD83C\uDD70";
-  private final String pasteInChat = "\uD83C\uDD71";
+    private EventWaiter eventWaiter;
+    private final String playSongEmoji = "\uD83C\uDD70";
+    private final String pasteInChat = "\uD83C\uDD71";
 
-  public CommandRakija(EventWaiter eventWaiter) {
-    super("rakija");
-    this.eventWaiter = eventWaiter;
-  }
+    public CommandRakija(EventWaiter eventWaiter)
+    {
+        super("rakija");
+        this.eventWaiter = eventWaiter;
+    }
 
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    context
-        .getChannel()
-        .sendMessage(
-            EmbedUtil.embedWithAuthor(context.getAuthor())
-                .setTitle("Please react")
-                .setDescription(
-                    "You should react with \""
-                        + playSongEmoji
-                        + "\" to play the song (should be in voice channel) or react with \""
-                        + pasteInChat
-                        + "\" to paste the song in the chat. Quick, you have 30 seconds to decide!")
-                .build())
-        .queue(
-            message -> {
-              message.addReaction(playSongEmoji).queue();
-              message.addReaction(pasteInChat).queue();
-              initWaiter(context, message, context.getAuthor());
-            });
-    return true;
-  }
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        context.getChannel().sendMessage(EmbedUtil.embedWithAuthor(context.getAuthor()).setTitle("Please react")
+                .setDescription("You should react with \"" + playSongEmoji
+                        + "\" to play the song (should be in voice channel) or react with \"" + pasteInChat
+                        + "\" to paste the song in the chat. Quick, you have 30 seconds to decide!").build())
+                .queue(message ->
+                {
+                    message.addReaction(playSongEmoji).queue();
+                    message.addReaction(pasteInChat).queue();
+                    initWaiter(context, message, context.getAuthor());
+                });
+        return true;
+    }
 
-  private void initWaiter(CommandExecutionContext context, Message message, User author) {
-    eventWaiter.waitForEvent(
-        GuildMessageReactionAddEvent.class,
-        reactEvent -> {
-          ReactionEmote emote = reactEvent.getReactionEmote();
+    private void initWaiter(CommandExecutionContext context, Message message, User author)
+    {
+        eventWaiter.waitForEvent(GuildMessageReactionAddEvent.class,
+                reactEvent ->
+                {
+                    ReactionEmote emote = reactEvent.getReactionEmote();
 
-          return (!reactEvent.getUser().isBot()
-                  && reactEvent.getMessageIdLong() == message.getIdLong()
-                  && !emote.isEmote())
-              && (playSongEmoji.equals(emote.getName()) || pasteInChat.equals(emote.getName()));
-        },
-        reactEvent -> {
-          ReactionEmote emote = reactEvent.getReactionEmote();
+                    return (!reactEvent.getUser().isBot()
+                            && reactEvent.getMessageIdLong() == message.getIdLong()
+                            && !emote.isEmote())
+                            && (playSongEmoji.equals(emote.getName()) || pasteInChat.equals(emote.getName()));
+                },
+                reactEvent ->
+                {
+                    ReactionEmote emote = reactEvent.getReactionEmote();
 
-          if (emote.getName().equals(playSongEmoji)) {
-            message.delete().queue();
-            CommandRegistrar.dispatchCommand(
-                context, "play https://www.youtube.com/watch?v=m8uVSJL0nBc");
-          }
-          if (emote.getName().equals(pasteInChat)) {
-            message.clearReactions().queue();
-            message
-                .editMessage("https://www.youtube.com/watch?v=m8uVSJL0nBc")
-                .override(true)
-                .queue();
-          }
-        },
-        30,
-        TimeUnit.SECONDS,
-        () -> {
-          message.clearReactions().queue();
-          message
-              .editMessage(
-                  EmbedUtil.embedWithAuthor(author)
-                      .setTitle("React time expired!")
-                      .setColor(Color.YELLOW)
-                      .build())
-              .queue();
-        });
-  }
+                    if (emote.getName().equals(playSongEmoji))
+                    {
+                        message.delete().queue();
+                        CommandRegistrar.dispatchCommand(context, "play https://www.youtube.com/watch?v=m8uVSJL0nBc");
+                    }
+                    if (emote.getName().equals(pasteInChat))
+                    {
+                        message.clearReactions().queue();
+                        message.editMessage("https://www.youtube.com/watch?v=m8uVSJL0nBc").override(true).queue();
+                    }
+                }, 30, TimeUnit.SECONDS,
+                () ->
+                {
+                    message.clearReactions().queue();
+                    message.editMessage(EmbedUtil.embedWithAuthor(author).setTitle("React time expired!").setColor(Color.YELLOW).build())
+                            .queue();
+                });
+    }
 }

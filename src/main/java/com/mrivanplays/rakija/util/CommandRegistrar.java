@@ -32,13 +32,7 @@ import com.mrivanplays.rakija.commands.Command8Ball;
 import com.mrivanplays.rakija.commands.CommandRakija;
 import com.mrivanplays.rakija.commands.CommandServerInfo;
 import com.mrivanplays.rakija.commands.CommandUserInfo;
-import com.mrivanplays.rakija.commands.music.CommandJoin;
-import com.mrivanplays.rakija.commands.music.CommandLeave;
-import com.mrivanplays.rakija.commands.music.CommandNowPlaying;
-import com.mrivanplays.rakija.commands.music.CommandPause;
-import com.mrivanplays.rakija.commands.music.CommandPlay;
-import com.mrivanplays.rakija.commands.music.CommandQueue;
-import com.mrivanplays.rakija.commands.music.CommandSkip;
+import com.mrivanplays.rakija.commands.music.*;
 import com.mrivanplays.teamtreesclient.FullGoalData;
 import com.mrivanplays.teamtreesclient.SiteResponse;
 import com.mrivanplays.teamtreesclient.TeamTreesClient;
@@ -49,141 +43,127 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
-public class CommandRegistrar {
+public class CommandRegistrar
+{
 
-  private static CommandManager commandManager;
+    private static CommandManager commandManager;
 
-  public static void registerCommands(JDA jda, Bot bot) {
-    CommandSettings settings = new CommandSettings();
-    settings.setEnableHelpCommand(true);
-    settings.setHelpCommandEmbed(
-        () -> EmbedUtil.defaultEmbed().setTitle("`()` - optional ; `[]` - required"));
-    settings.setEnablePrefixCommand(true);
-    settings.setPrefixCommandEmbed(
-        () -> EmbedUtil.defaultEmbed().setColor(Color.BLUE).setTitle("Prefix"));
-    settings.setEnableMentionInsteadPrefix(true);
-    settings.setExecutorService(bot.getExecutor());
-    settings.setCommandsPerHelpPage(10);
-    settings.setErrorEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.RED).setTitle("Error"));
-    settings.setNoPermissionEmbed(
-        () ->
-            EmbedUtil.defaultEmbed()
+    public static void registerCommands(JDA jda, Bot bot)
+    {
+        CommandSettings settings = new CommandSettings();
+        settings.setEnableHelpCommand(true);
+        settings.setHelpCommandEmbed(() -> EmbedUtil.defaultEmbed().setTitle("`()` - optional ; `[]` - required"));
+        settings.setEnablePrefixCommand(true);
+        settings.setPrefixCommandEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.BLUE).setTitle("Prefix"));
+        settings.setEnableMentionInsteadPrefix(true);
+        settings.setExecutorService(bot.getExecutor());
+        settings.setCommandsPerHelpPage(10);
+        settings.setErrorEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.RED).setTitle("Error"));
+        settings.setNoPermissionEmbed(() -> EmbedUtil.defaultEmbed()
                 .setColor(Color.RED)
                 .setTitle("Error")
                 .setDescription("You don't have permission to perform this command."));
-    settings.setSuccessEmbed(
-        () -> EmbedUtil.defaultEmbed().setColor(Color.GREEN).setTitle("Success"));
-    settings.setPrefixHandler(new DefaultPrefixHandler(bot.getExecutor()));
-    settings.getPrefixHandler().setDefaultPrefix("r!");
-    CommandRegistrar.commandManager = new CommandManager(jda, settings);
+        settings.setSuccessEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.GREEN).setTitle("Success"));
+        settings.setPrefixHandler(new DefaultPrefixHandler(bot.getExecutor(), BotUtils.JSON_MAPPER));
+        settings.getPrefixHandler().setDefaultPrefix("r!");
+        CommandRegistrar.commandManager = new CommandManager(jda, settings);
 
-    commandManager.registerCommands(
-        new CommandRakija(bot.getEventWaiter()),
-        new CommandServerInfo(),
-        new CommandUserInfo(),
-        new Command8Ball());
+        commandManager.registerCommands(
+                new CommandRakija(bot.getEventWaiter()),
+                new CommandServerInfo(),
+                new CommandUserInfo(),
+                new Command8Ball());
 
-    commandsUsingBuilder(bot);
-    musicCommands(bot, settings);
-  }
+        commandsUsingBuilder(bot);
+        musicCommands(bot, settings);
+    }
 
-  public static boolean dispatchCommand(CommandExecutionContext context, String commandLine) {
-    return commandManager.dispatchCommand(
-        context.getJda(),
-        context.getGuild(),
-        context.getChannel(),
-        context.getMember(),
-        commandLine);
-  }
+    public static boolean dispatchCommand(CommandExecutionContext context, String commandLine)
+    {
+        return commandManager.dispatchCommand(context.getJda(), context.getGuild(), context.getChannel(), context.getMember(), commandLine);
+    }
 
-  private static void musicCommands(Bot bot, CommandSettings settings) {
-    commandManager.registerCommands(
-        new CommandJoin(),
-        new CommandLeave(bot),
-        new CommandNowPlaying(bot),
-        new CommandPause(bot, settings),
-        new CommandPlay(bot, settings),
-        new CommandQueue(bot),
-        new CommandSkip(bot));
-  }
+    private static void musicCommands(Bot bot, CommandSettings settings)
+    {
+        commandManager.registerCommands(
+                new CommandJoin(),
+                new CommandLeave(bot),
+                new CommandNowPlaying(bot),
+                new CommandPause(bot, settings),
+                new CommandPlay(bot, settings),
+                new CommandQueue(bot),
+                new CommandSkip(bot));
+    }
 
-  private static void commandsUsingBuilder(Bot bot) {
-    TeamTreesClient teamTrees =
-        new TeamTreesClient(commandManager.getSettings().getExecutorService(), false);
-    Command.builder()
-        .name("ping")
-        .usage("ping")
-        .description("Shows the latency of the bot")
-        .executor(
-            (context, args) -> {
-              context
-                  .getChannel()
-                  .sendMessage(
-                      EmbedUtil.embedWithAuthor(context.getAuthor())
-                          .setTitle("Latency")
-                          .setDescription(
-                              "Gateway ping: "
-                                  + context.getJda().getGatewayPing()
-                                  + " \n Rest ping: "
-                                  + context.getJda().getRestPing().complete())
-                          .build())
-                  .queue();
-              return true;
-            })
-        .buildAndRegister(commandManager);
+    private static void commandsUsingBuilder(Bot bot)
+    {
+        TeamTreesClient teamTrees =
+                new TeamTreesClient(commandManager.getSettings().getExecutorService(), false);
+        Command.builder()
+                .name("ping")
+                .usage("ping")
+                .description("Shows the latency of the bot")
+                .executor((context, args) ->
+                {
+                    long gatewayPing = context.getJda().getGatewayPing();
+                    long restPing = context.getJda().getRestPing().complete();
+                    context.getChannel().sendMessage(EmbedUtil.embedWithAuthor(context.getAuthor())
+                            .setTitle("Latency")
+                            .setDescription("Gateway ping: " + gatewayPing + " \n Rest ping: " + restPing).build())
+                            .queue();
+                    return true;
+                })
+                .buildAndRegister(commandManager);
 
-    Command.builder()
-        .name("shutdown")
-        .executor(
-            (context, args) -> {
-              User author = context.getAuthor();
-              if (!author.getId().equalsIgnoreCase(bot.getConfig().getString("owner"))) {
-                context
-                    .getChannel()
-                    .sendMessage(EmbedUtil.noPermissionEmbed(author))
-                    .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
-                context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-                return false;
-              }
-              Bot.LOGGER.info("Bot shutting down");
-              context.getJda().shutdownNow();
-              context.getJda().getHttpClient().connectionPool().evictAll();
-              context.getJda().getHttpClient().dispatcher().executorService().shutdown();
-              teamTrees.shutdown();
-              return true;
-            })
-        .buildAndRegister(commandManager);
+        Command.builder()
+                .name("shutdown")
+                .executor((context, args) ->
+                {
+                    User author = context.getAuthor();
+                    if (!author.getId().equalsIgnoreCase(bot.getConfig().getString("owner")))
+                    {
+                        context.getChannel().sendMessage(EmbedUtil.noPermissionEmbed(author))
+                                .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
+                        context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+                        return false;
+                    }
+                    Bot.LOGGER.info("Bot shutting down");
+                    context.getJda().shutdownNow();
+                    context.getJda().getHttpClient().connectionPool().evictAll();
+                    context.getJda().getHttpClient().dispatcher().executorService().shutdown();
+                    teamTrees.shutdown();
+                    return true;
+                })
+                .buildAndRegister(commandManager);
 
-    Command.builder()
-        .name("teamtrees")
-        .usage("teamtrees")
-        .aliases("trees", "teamtreesinfo", "treesinfo")
-        .description("Shows stats about the teamtrees goal")
-        .executor(
-            (context, args) -> {
-              SiteResponse<FullGoalData> siteData = teamTrees.retrieveFullData().join();
-              Optional<FullGoalData> data = siteData.getData();
-              if (data.isPresent()) {
-                FullGoalData actualData = data.get();
-                EmbedBuilder embedBuilder =
-                    EmbedUtil.successEmbed(context.getAuthor()).setTitle("Let's go TeamTrees!");
-                embedBuilder.addField(
-                    "Trees: ", BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTrees()), true);
-                embedBuilder.addField(
-                    "Trees left: ",
-                    BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTreesLeft()),
-                    true);
-                embedBuilder.addField(
-                    "Percentage done: ",
-                    BotUtils.DECIMAL_FORMAT_PERCENTAGE.format(actualData.getPercentDone()),
-                    true);
-                embedBuilder.addField(
-                    "Days left: ", String.valueOf(actualData.getDaysLeft()), true);
-                context.getChannel().sendMessage(embedBuilder.build()).queue();
-                return true;
-              }
-              return false;
-            })
-        .buildAndRegister(commandManager);
-  }
+        Command.builder()
+                .name("teamtrees")
+                .usage("teamtrees")
+                .aliases("trees", "teamtreesinfo", "treesinfo")
+                .description("Shows stats about the teamtrees goal")
+                .executor((context, args) ->
+                {
+                    SiteResponse<FullGoalData> siteData = teamTrees.retrieveFullData().join();
+                    Optional<FullGoalData> data = siteData.getData();
+                    if (data.isPresent())
+                    {
+                        FullGoalData actualData = data.get();
+                        EmbedBuilder embedBuilder = EmbedUtil.successEmbed(context.getAuthor()).setTitle("Let's go TeamTrees!");
+                        embedBuilder.addField("Trees: ", BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTrees()), true);
+                        embedBuilder.addField(
+                                "Trees left: ",
+                                BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTreesLeft()),
+                                true);
+                        embedBuilder.addField(
+                                "Percentage done: ",
+                                BotUtils.DECIMAL_FORMAT_PERCENTAGE.format(actualData.getPercentDone()),
+                                true);
+                        embedBuilder.addField("Days left: ", String.valueOf(actualData.getDaysLeft()), true);
+                        context.getChannel().sendMessage(embedBuilder.build()).queue();
+                        return true;
+                    }
+                    return false;
+                })
+                .buildAndRegister(commandManager);
+    }
 }

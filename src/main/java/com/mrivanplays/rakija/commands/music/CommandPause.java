@@ -36,89 +36,81 @@ import com.mrivanplays.rakija.util.EmbedUtil;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Pauses/Plays the currently playing song")
 @CommandUsage("pause")
 @CommandAliases("resume")
-public class CommandPause extends Command {
+public class CommandPause extends Command
+{
 
-  private Bot bot;
-  private CommandSettings settings;
+    private Bot bot;
+    private CommandSettings settings;
 
-  public CommandPause(Bot bot, CommandSettings settings) {
-    super("pause");
-    this.bot = bot;
-    this.settings = settings;
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    User author = context.getAuthor();
-    Guild guild = context.getGuild();
-    Member selfMember = guild.getSelfMember();
-
-    PlayerManager playerManager = bot.getPlayerManager();
-    GuildMusicManager musicManager = playerManager.getGuildMusicManager(guild);
-
-    VoiceChannel voiceChannel = selfMember.getVoiceState().getChannel();
-    List<Member> voiceChannelMembers = new ArrayList<>(voiceChannel.getMembers());
-    voiceChannelMembers.remove(selfMember);
-
-    if (voiceChannelMembers.size() == 1) {
-      musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
-      channel
-          .sendMessage(
-              getMessage(
-                      musicManager.getPlayer().isPaused(), author, context.getGuild().getIdLong())
-                  .build())
-          .queue();
-      return true;
-    } else {
-      Role dj = guild.getRolesByName("DJ", true).get(0);
-      if (dj == null) {
-        context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
-      }
-      if (context.getMember().getRoles().contains(dj)) {
-        musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
-        channel
-            .sendMessage(
-                getMessage(
-                        musicManager.getPlayer().isPaused(), author, context.getGuild().getIdLong())
-                    .build())
-            .queue();
-        return true;
-      } else {
-        channel
-            .sendMessage(
-                EmbedUtil.errorEmbed(author)
-                    .setTitle("Error")
-                    .setDescription(
-                        "You need to have the DJ role to be able to do that (being alone with the bot also works)")
-                    .build())
-            .queue();
-      }
+    public CommandPause(Bot bot, CommandSettings settings)
+    {
+        super("pause");
+        this.bot = bot;
+        this.settings = settings;
     }
-    return false;
-  }
 
-  private EmbedBuilder getMessage(boolean isPaused, User author, long guildId) {
-    if (isPaused) {
-      return EmbedUtil.successEmbed(author)
-          .setDescription(
-              "Track paused. Use `"
-                  + settings.getPrefixHandler().getPrefix(guildId)
-                  + "play` or this command again to resume");
-    } else {
-      return EmbedUtil.successEmbed(author).setDescription("Track resumed.");
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        User author = context.getAuthor();
+        Guild guild = context.getGuild();
+        Member selfMember = guild.getSelfMember();
+
+        PlayerManager playerManager = bot.getPlayerManager();
+        GuildMusicManager musicManager = playerManager.getGuildMusicManager(guild);
+
+        VoiceChannel voiceChannel = selfMember.getVoiceState().getChannel();
+        List<Member> voiceChannelMembers = new ArrayList<>(voiceChannel.getMembers());
+        voiceChannelMembers.remove(selfMember);
+
+        String prefix = settings.getPrefixHandler().getPrefix(context.getGuild().getIdLong());
+
+        if (voiceChannelMembers.size() == 1)
+        {
+            musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
+            channel.sendMessage(getMessage(musicManager.getPlayer().isPaused(), author, prefix)).queue();
+            return true;
+        }
+        else
+        {
+            Role dj = guild.getRolesByName("DJ", true).get(0);
+            if (dj == null)
+            {
+                context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
+            }
+            if (context.getMember().getRoles().contains(dj))
+            {
+                musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
+                channel.sendMessage(getMessage(musicManager.getPlayer().isPaused(), author, prefix)).queue();
+                return true;
+            }
+            else
+            {
+                channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                        .setDescription("You need to have the DJ role to be able to do that (being alone with the bot also works)")
+                        .build()).queue();
+            }
+        }
+        return false;
     }
-  }
+
+    private MessageEmbed getMessage(boolean isPaused, User author, String prefix)
+    {
+        if (isPaused)
+        {
+            return EmbedUtil.successEmbed(author)
+                    .setDescription("Track paused. Use `" + prefix + "play` or this command again to resume").build();
+        }
+        else
+        {
+            return EmbedUtil.successEmbed(author).setDescription("Track resumed.").build();
+        }
+    }
 }

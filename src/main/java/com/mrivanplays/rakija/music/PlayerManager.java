@@ -38,92 +38,88 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class PlayerManager {
-  private final AudioPlayerManager playerManager;
-  private final Map<Long, GuildMusicManager> musicManagers;
+public class PlayerManager
+{
+    private final AudioPlayerManager playerManager;
+    private final Map<Long, GuildMusicManager> musicManagers;
 
-  public PlayerManager() {
-    this.musicManagers = new HashMap<>();
+    public PlayerManager()
+    {
+        this.musicManagers = new HashMap<>();
 
-    this.playerManager = new DefaultAudioPlayerManager();
-    AudioSourceManagers.registerRemoteSources(playerManager);
-    AudioSourceManagers.registerLocalSource(playerManager);
-  }
-
-  public synchronized GuildMusicManager getGuildMusicManager(Guild guild) {
-    long guildId = guild.getIdLong();
-    GuildMusicManager musicManager = musicManagers.get(guildId);
-
-    if (musicManager == null) {
-      musicManager = new GuildMusicManager(playerManager);
-      musicManagers.put(guildId, musicManager);
+        this.playerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(playerManager);
+        AudioSourceManagers.registerLocalSource(playerManager);
     }
 
-    guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+    public synchronized GuildMusicManager getGuildMusicManager(Guild guild)
+    {
+        long guildId = guild.getIdLong();
+        GuildMusicManager musicManager = musicManagers.get(guildId);
 
-    return musicManager;
-  }
+        if (musicManager == null)
+        {
+            musicManager = new GuildMusicManager(playerManager);
+            musicManagers.put(guildId, musicManager);
+        }
 
-  public void loadAndPlay(TextChannel channel, String trackUrl, Member requester, User author) {
-    GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
 
-    playerManager.loadItemOrdered(
-        musicManager,
-        trackUrl,
-        new AudioLoadResultHandler() {
+        return musicManager;
+    }
 
-          @Override
-          public void trackLoaded(AudioTrack track) {
-            channel
-                .sendMessage(
-                    EmbedUtil.successEmbed(author)
+    public void loadAndPlay(TextChannel channel, String trackUrl, Member requester, User author)
+    {
+        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+
+        playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler()
+        {
+
+            @Override
+            public void trackLoaded(AudioTrack track)
+            {
+                channel.sendMessage(EmbedUtil.successEmbed(author)
                         .setDescription("Adding to queue `" + track.getInfo().title + "`")
-                        .build())
-                .queue();
+                        .build()).queue();
 
-            musicManager.getScheduler().queue(track, requester);
-          }
-
-          @Override
-          public void playlistLoaded(AudioPlaylist playlist) {
-            AudioTrack track = playlist.getSelectedTrack();
-
-            if (track == null) {
-              track = playlist.getTracks().remove(0);
+                musicManager.getScheduler().queue(track, requester);
             }
 
-            channel
-                .sendMessage(
-                    EmbedUtil.successEmbed(author)
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist)
+            {
+                AudioTrack track = playlist.getSelectedTrack();
+
+                if (track == null)
+                {
+                    track = playlist.getTracks().remove(0);
+                }
+
+                channel.sendMessage(EmbedUtil.successEmbed(author)
                         .setDescription("Adding to queue `" + track.getInfo().title + "`")
-                        .build())
-                .queue();
+                        .build()).queue();
 
-            musicManager.getScheduler().queue(track, requester);
-          }
+                musicManager.getScheduler().queue(track, requester);
+            }
 
-          @Override
-          public void noMatches() {
-            channel
-                .sendMessage(
-                    EmbedUtil.embedWithAuthor(author)
+            @Override
+            public void noMatches()
+            {
+                channel.sendMessage(EmbedUtil.embedWithAuthor(author)
                         .setColor(Color.YELLOW)
                         .setTitle("Nothing found")
                         .setDescription("Nothing found by " + trackUrl)
-                        .build())
-                .queue();
-          }
+                        .build()).queue();
+            }
 
-          @Override
-          public void loadFailed(FriendlyException exception) {
-            channel
-                .sendMessage(
-                    EmbedUtil.errorEmbed(author)
+            @Override
+            public void loadFailed(FriendlyException exception)
+            {
+                channel.sendMessage(EmbedUtil.errorEmbed(author)
                         .setTitle("Could not play that link")
                         .setDescription("`" + exception.getMessage() + "`")
-                        .build())
-                .queue();
-          }
+                        .build()).queue();
+            }
         });
-  }
+    }
 }

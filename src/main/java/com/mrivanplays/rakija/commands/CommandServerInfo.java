@@ -36,57 +36,53 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows various data about the current server")
 @CommandUsage("serverinfo")
-public class CommandServerInfo extends Command {
+public class CommandServerInfo extends Command
+{
 
-  public CommandServerInfo() {
-    super("serverinfo");
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    Guild guild = context.getGuild();
-    String generalInfo =
-        String.format(
-            "**Owner**: <@%s>\n**Region**: %s\n**Creation Date**: %s\n**Verification Level**:"
-                + " %s",
-            guild.getOwnerId(),
-            guild.getRegion().getName(),
-            guild.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-            convertVerificationLevel(guild.getVerificationLevel()));
-
-    String memberInfo =
-        String.format(
-            "**Total Roles**: %s\n**Total Members**: %s\n**Online Members**: %s\n**Offline "
-                + "Members**: %s\n**Bot Count**: %s",
-            guild.getRoleCache().size(),
-            guild.getMemberCache().size(),
-            guild.getMemberCache().stream()
-                .filter((m) -> m.getOnlineStatus() == OnlineStatus.ONLINE)
-                .count(),
-            guild.getMemberCache().stream()
-                .filter((m) -> m.getOnlineStatus() == OnlineStatus.OFFLINE)
-                .count(),
-            guild.getMemberCache().stream().filter((m) -> m.getUser().isBot()).count());
-
-    EmbedBuilder embed =
-        EmbedUtil.defaultEmbed()
-            .setTitle("Server info for " + guild.getName())
-            .setThumbnail(guild.getIconUrl())
-            .addField("General Info", generalInfo, false)
-            .addField("Role And Member Counts", memberInfo, false);
-
-    context.getChannel().sendMessage(embed.build()).queue();
-    return true;
-  }
-
-  private String convertVerificationLevel(Guild.VerificationLevel lvl) {
-    String[] names = lvl.name().toLowerCase().split("_");
-    StringBuilder out = new StringBuilder();
-
-    for (String name : names) {
-      out.append(Character.toUpperCase(name.charAt(0))).append(name.substring(1)).append(" ");
+    public CommandServerInfo()
+    {
+        super("serverinfo");
     }
 
-    return out.toString().trim();
-  }
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        Guild guild = context.getGuild();
+        String generalInfo = String.format(
+                "**Owner**: <@%s>\n**Region**: %s\n**Creation Date**: %s\n**Verification Level**: %s",
+                guild.getOwnerId(),
+                guild.getRegion().getName(),
+                guild.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                convertVerificationLevel(guild.getVerificationLevel()));
+
+        String memberInfo = String.format(
+                "**Total Roles**: %s\n**Total Members**: %s\n**Online Members**: %s\n**Offline Members**: %s\n**Bot Count**: %s",
+                guild.getRoleCache().size(),
+                guild.getMemberCache().size(),
+                guild.getMemberCache().stream().filter((m) -> m.getOnlineStatus() == OnlineStatus.ONLINE).count(),
+                guild.getMemberCache().stream().filter((m) -> m.getOnlineStatus() == OnlineStatus.OFFLINE).count(),
+                guild.getMemberCache().stream().filter((m) -> m.getUser().isBot()).count());
+
+        EmbedBuilder embed = EmbedUtil.defaultEmbed()
+                .setTitle("Server info for " + guild.getName())
+                .setThumbnail(guild.getIconUrl())
+                .addField("General Info", generalInfo, false)
+                .addField("Role And Member Counts", memberInfo, false);
+
+        context.getChannel().sendMessage(embed.build()).queue();
+        return true;
+    }
+
+    private String convertVerificationLevel(Guild.VerificationLevel lvl)
+    {
+        String[] names = lvl.name().toLowerCase().split("_");
+        StringBuilder out = new StringBuilder();
+
+        for (String name : names)
+        {
+            out.append(Character.toUpperCase(name.charAt(0))).append(name.substring(1)).append(" ");
+        }
+
+        return out.toString().trim();
+    }
 }

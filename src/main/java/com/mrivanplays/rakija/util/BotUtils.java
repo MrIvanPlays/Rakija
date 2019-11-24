@@ -22,10 +22,20 @@
 */
 package com.mrivanplays.rakija.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.DecimalFormat;
 
-public class BotUtils {
+public class BotUtils
+{
 
-  public static DecimalFormat DECIMAL_FORMAT_NUMBER = new DecimalFormat("###,###,###.##");
-  public static DecimalFormat DECIMAL_FORMAT_PERCENTAGE = new DecimalFormat("###.##");
+    public static DecimalFormat DECIMAL_FORMAT_NUMBER;
+    public static DecimalFormat DECIMAL_FORMAT_PERCENTAGE;
+    public static ObjectMapper JSON_MAPPER;
+
+    static
+    {
+        DECIMAL_FORMAT_NUMBER = new DecimalFormat("###,###,###.##");
+        DECIMAL_FORMAT_PERCENTAGE = new DecimalFormat("###.##");
+        JSON_MAPPER = new ObjectMapper();
+    }
 }

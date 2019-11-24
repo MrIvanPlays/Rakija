@@ -31,73 +31,56 @@ import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Makes the bot join into your voice channel if you are in a voice channel")
 @CommandUsage("join")
 @CommandAliases("j")
-public class CommandJoin extends Command {
+public class CommandJoin extends Command
+{
 
-  public CommandJoin() {
-    super("join");
-  }
-
-  @Override
-  public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args) {
-    TextChannel channel = context.getChannel();
-    User author = context.getAuthor();
-    AudioManager audioManager = context.getGuild().getAudioManager();
-    if (audioManager.isConnected()) {
-      channel
-          .sendMessage(
-              EmbedUtil.errorEmbed(author)
-                  .setTitle("Error")
-                  .setDescription("I am already connected to a voice channel.")
-                  .build())
-          .complete()
-          .delete()
-          .queueAfter(15, TimeUnit.SECONDS);
-      context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-      return true;
+    public CommandJoin()
+    {
+        super("join");
     }
 
-    GuildVoiceState memberVoiceState = context.getMember().getVoiceState();
-    if (!memberVoiceState.inVoiceChannel()) {
-      channel
-          .sendMessage(
-              EmbedUtil.errorEmbed(author)
-                  .setTitle("Error")
-                  .setDescription("You need to be in a voice channel")
-                  .build())
-          .complete()
-          .delete()
-          .queueAfter(15, TimeUnit.SECONDS);
-      context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-      return false;
-    }
+    @Override
+    public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
+    {
+        TextChannel channel = context.getChannel();
+        User author = context.getAuthor();
+        AudioManager audioManager = context.getGuild().getAudioManager();
+        if (audioManager.isConnected())
+        {
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                    .setDescription("I am already connected to a voice channel.")
+                    .build()).complete().delete().queueAfter(15, TimeUnit.SECONDS);
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+            return true;
+        }
 
-    VoiceChannel voiceChannel = memberVoiceState.getChannel();
-    Member self = context.getGuild().getSelfMember();
-    if (!self.hasPermission(voiceChannel, Permission.VOICE_CONNECT)) {
-      channel
-          .sendMessage(
-              EmbedUtil.errorEmbed(author)
-                  .setTitle("Error")
-                  .setDescription("I don't have permission to join this voice channel")
-                  .build())
-          .complete()
-          .delete()
-          .queueAfter(15, TimeUnit.SECONDS);
-      context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-      return false;
+        GuildVoiceState memberVoiceState = context.getMember().getVoiceState();
+        if (!memberVoiceState.inVoiceChannel())
+        {
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error").setDescription("You need to be in a voice channel").build())
+                    .complete().delete().queueAfter(15, TimeUnit.SECONDS);
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+            return false;
+        }
+
+        VoiceChannel voiceChannel = memberVoiceState.getChannel();
+        Member self = context.getGuild().getSelfMember();
+        if (!self.hasPermission(voiceChannel, Permission.VOICE_CONNECT))
+        {
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
+                    .setDescription("I don't have permission to join this voice channel")
+                    .build()).complete().delete().queueAfter(15, TimeUnit.SECONDS);
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+            return false;
+        }
+        audioManager.openAudioConnection(voiceChannel);
+        return true;
     }
-    audioManager.openAudioConnection(voiceChannel);
-    return true;
-  }
 }
