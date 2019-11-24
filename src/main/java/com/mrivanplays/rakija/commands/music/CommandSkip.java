@@ -31,6 +31,7 @@ import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.music.PlayerManager;
 import com.mrivanplays.rakija.music.TrackScheduler;
+import com.mrivanplays.rakija.util.BotUtils;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -66,36 +67,28 @@ public class CommandSkip extends Command
         PlayerManager playerManager = bot.getPlayerManager();
         GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
         TrackScheduler scheduler = musicManager.getScheduler();
-        AudioPlayer player = musicManager.getPlayer();
-        if (player.getPlayingTrack() == null)
+
+        GuildVoiceState botState = context.getGuild().getSelfMember().getVoiceState();
+        GuildVoiceState memberState = context.getMember().getVoiceState();
+        return BotUtils.checkVoiceStates(channel, botState, memberState, author, context.getMessage(), () ->
         {
-            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
-                    .setDescription("The track isn't playing anything.").build())
-                    .complete().delete().queueAfter(15, TimeUnit.SECONDS);
-            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-            return false;
-        }
-        VoiceChannel voiceChannel = context.getGuild().getSelfMember().getVoiceState().getChannel();
-        List<Member> voiceChannelMembers = new ArrayList<>(voiceChannel.getMembers());
-        voiceChannelMembers.remove(context.getGuild().getSelfMember());
-        if (voiceChannelMembers.size() == 1)
-        {
-            if (!scheduler.nextTrack())
+            AudioPlayer player = musicManager.getPlayer();
+            if (player.getPlayingTrack() == null)
             {
-                player.stopTrack();
-                player.setPaused(false);
+                channel.sendMessage(EmbedUtil.errorEmbed(author)
+                        .setDescription("The track isn't playing anything.").build())
+                        .complete().delete().queueAfter(15, TimeUnit.SECONDS);
+                context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
+                return;
             }
-            channel.sendMessage(stctMessage(author).build()).queue();
-            return true;
-        }
-        else
-        {
-            Role dj = context.getGuild().getRolesByName("DJ", true).get(0);
-            if (dj == null)
+            VoiceChannel voiceChannel = memberState.getChannel();
+            List<Member> members = new ArrayList<Member>(voiceChannel.getMembers())
             {
-                context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
-            }
-            if (context.getMember().getRoles().contains(dj))
+                {
+                    remove(context.getGuild().getSelfMember());
+                }
+            };
+            if (members.size() == 1)
             {
                 if (!scheduler.nextTrack())
                 {
@@ -103,38 +96,55 @@ public class CommandSkip extends Command
                     player.setPaused(false);
                 }
                 channel.sendMessage(stctMessage(author).build()).queue();
-                return true;
+                return;
             }
-            Integer votes = skipVotes.get(player.getPlayingTrack());
-            if (votes == null)
+            if (members.size() > 1)
             {
-                votes = 1;
-                skipVotes.put(player.getPlayingTrack(), votes);
-            }
-            else
-            {
-                votes++;
-            }
-            if (votes >= voiceChannelMembers.size())
-            {
-                if (!scheduler.nextTrack())
+                Role dj = context.getGuild().getRolesByName("DJ", true).get(0);
+                if (dj == null)
                 {
-                    player.stopTrack();
-                    player.setPaused(false);
+                    context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
                 }
-                channel.sendMessage(stctMessage(author).build()).queue();
-                return true;
+                if (context.getMember().getRoles().contains(dj))
+                {
+                    if (!scheduler.nextTrack())
+                    {
+                        player.stopTrack();
+                        player.setPaused(false);
+                    }
+                    channel.sendMessage(stctMessage(author).build()).queue();
+                }
+                else
+                {
+                    Integer votes = skipVotes.get(player.getPlayingTrack());
+                    if (votes == null)
+                    {
+                        votes = 1;
+                        skipVotes.put(player.getPlayingTrack(), votes);
+                    }
+                    else
+                    {
+                        votes++;
+                    }
+                    if (votes >= members.size())
+                    {
+                        if (!scheduler.nextTrack())
+                        {
+                            player.stopTrack();
+                            player.setPaused(false);
+                        }
+                        channel.sendMessage(stctMessage(author).build()).queue();
+                    }
+                    else
+                    {
+                        channel.sendMessage(EmbedUtil.embedWithAuthor(author).setColor(Color.YELLOW)
+                                .setTitle("There's one more problem...")
+                                .setDescription("To skip the current track we need `" + (members.size() - votes) + "` more vote(s)")
+                                .build()).queue();
+                    }
+                }
             }
-            else
-            {
-                channel.sendMessage(EmbedUtil.embedWithAuthor(author)
-                        .setColor(Color.YELLOW)
-                        .setTitle("There's one more problem...")
-                        .setDescription("To skip the current track we need `" + (voiceChannelMembers.size() - votes) + "` more vote(s)")
-                        .build()).queue();
-                return false;
-            }
-        }
+        });
     }
 
     private EmbedBuilder stctMessage(User author)

@@ -29,6 +29,7 @@ import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.Bot;
+import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.util.BotUtils;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.awt.Color;
@@ -37,32 +38,31 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 
-@CommandDescription("Makes the bot leave your channel")
-@CommandUsage("leave")
-@CommandAliases("l|quit|disconnect|dc")
-public class CommandLeave extends Command
+@CommandDescription("Makes the player repeat the currently playing song")
+@CommandUsage("repeat")
+@CommandAliases("loop")
+public class CommandRepeat extends Command
 {
 
     private Bot bot;
 
-    public CommandLeave(Bot bot)
+    public CommandRepeat(Bot bot)
     {
-        super("leave");
+        super("repeat");
         this.bot = bot;
     }
 
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
+        GuildMusicManager musicManager = bot.getPlayerManager().getGuildMusicManager(context.getGuild());
+        GuildVoiceState botVoiceState = context.getGuild().getSelfMember().getVoiceState();
+        GuildVoiceState memberVoiceState = context.getMember().getVoiceState();
         TextChannel channel = context.getChannel();
         User author = context.getAuthor();
-        Member member = context.getMember();
-
-        GuildVoiceState botState = context.getGuild().getSelfMember().getVoiceState();
-        GuildVoiceState memberState = context.getMember().getVoiceState();
-        return BotUtils.checkVoiceStates(channel, botState, memberState, author, context.getMessage(), () ->
+        return BotUtils.checkVoiceStates(channel, botVoiceState, memberVoiceState, author, context.getMessage(), () ->
         {
-            VoiceChannel voiceChannel = memberState.getChannel();
+            VoiceChannel voiceChannel = memberVoiceState.getChannel();
             List<Member> members = new ArrayList<Member>(voiceChannel.getMembers())
             {
                 {
@@ -71,9 +71,9 @@ public class CommandLeave extends Command
             };
             if (members.size() == 1)
             {
-                context.getGuild().getAudioManager().closeAudioConnection();
-                bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getPlayer().stopTrack();
-                bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getScheduler().getQueue().clear();
+                musicManager.getScheduler().setRepeating(!musicManager.getScheduler().isRepating());
+                String setTo = musicManager.getScheduler().isRepating() ? "repeat" : "not repeat";
+                channel.sendMessage(EmbedUtil.successEmbed(author).setDescription("Player was set to " + setTo).build()).queue();
                 return;
             }
             if (members.size() > 1)
@@ -87,11 +87,11 @@ public class CommandLeave extends Command
                             .build()).queue();
                     return;
                 }
-                if (member.getRoles().contains(dj))
+                if (context.getMember().getRoles().contains(dj))
                 {
-                    context.getGuild().getAudioManager().closeAudioConnection();
-                    bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getPlayer().stopTrack();
-                    bot.getPlayerManager().getGuildMusicManager(context.getGuild()).getScheduler().getQueue().clear();
+                    musicManager.getScheduler().setRepeating(!musicManager.getScheduler().isRepating());
+                    String setTo = musicManager.getScheduler().isRepating() ? "repeat" : "not repeat";
+                    channel.sendMessage(EmbedUtil.successEmbed(author).setDescription("Player was set to " + setTo).build()).queue();
                 }
                 else
                 {

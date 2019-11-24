@@ -61,7 +61,8 @@ public class CommandNowPlaying extends Command
         AudioPlayer player = musicManager.getPlayer();
         if (player.getPlayingTrack() == null)
         {
-            channel.sendMessage("Nothing is currently played").queue();
+            context.getChannel().sendMessage(EmbedUtil.embedWithAuthor(context.getAuthor()).setTitle("Now playing")
+                    .setDescription("Nothing is currently played").build()).queue();
             return true;
         }
 

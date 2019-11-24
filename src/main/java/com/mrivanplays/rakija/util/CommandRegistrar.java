@@ -92,7 +92,9 @@ public class CommandRegistrar
                 new CommandPause(bot, settings),
                 new CommandPlay(bot, settings),
                 new CommandQueue(bot),
-                new CommandSkip(bot));
+                new CommandSkip(bot),
+                new CommandVolume(bot),
+                new CommandRepeat(bot));
     }
 
     private static void commandsUsingBuilder(Bot bot)

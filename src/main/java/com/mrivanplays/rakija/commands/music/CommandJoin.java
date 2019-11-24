@@ -54,8 +54,8 @@ public class CommandJoin extends Command
         AudioManager audioManager = context.getGuild().getAudioManager();
         if (audioManager.isConnected())
         {
-            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
-                    .setDescription("I am already connected to a voice channel.")
+            channel.sendMessage(EmbedUtil.errorEmbed(author)
+                    .setDescription("Bot is already connected to voice channel")
                     .build()).complete().delete().queueAfter(15, TimeUnit.SECONDS);
             context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
             return true;
@@ -64,7 +64,7 @@ public class CommandJoin extends Command
         GuildVoiceState memberVoiceState = context.getMember().getVoiceState();
         if (!memberVoiceState.inVoiceChannel())
         {
-            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error").setDescription("You need to be in a voice channel").build())
+            channel.sendMessage(EmbedUtil.errorEmbed(author).setDescription("You need to be in a voice channel").build())
                     .complete().delete().queueAfter(15, TimeUnit.SECONDS);
             context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
             return false;
@@ -74,8 +74,8 @@ public class CommandJoin extends Command
         Member self = context.getGuild().getSelfMember();
         if (!self.hasPermission(voiceChannel, Permission.VOICE_CONNECT))
         {
-            channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
-                    .setDescription("I don't have permission to join this voice channel")
+            channel.sendMessage(EmbedUtil.errorEmbed(author)
+                    .setDescription("Bot doesn't have permission to connect to the voice channel you are connected")
                     .build()).complete().delete().queueAfter(15, TimeUnit.SECONDS);
             context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
             return false;

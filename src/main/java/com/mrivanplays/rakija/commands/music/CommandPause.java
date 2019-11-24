@@ -32,6 +32,7 @@ import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.music.PlayerManager;
+import com.mrivanplays.rakija.util.BotUtils;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -66,39 +67,48 @@ public class CommandPause extends Command
         PlayerManager playerManager = bot.getPlayerManager();
         GuildMusicManager musicManager = playerManager.getGuildMusicManager(guild);
 
-        VoiceChannel voiceChannel = selfMember.getVoiceState().getChannel();
-        List<Member> voiceChannelMembers = new ArrayList<>(voiceChannel.getMembers());
-        voiceChannelMembers.remove(selfMember);
-
-        String prefix = settings.getPrefixHandler().getPrefix(context.getGuild().getIdLong());
-
-        if (voiceChannelMembers.size() == 1)
+        GuildVoiceState botState = selfMember.getVoiceState();
+        GuildVoiceState memberState = context.getMember().getVoiceState();
+        return BotUtils.checkVoiceStates(channel, botState, memberState, author, context.getMessage(), () ->
         {
-            musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
-            channel.sendMessage(getMessage(musicManager.getPlayer().isPaused(), author, prefix)).queue();
-            return true;
-        }
-        else
-        {
-            Role dj = guild.getRolesByName("DJ", true).get(0);
-            if (dj == null)
+            VoiceChannel voiceChannel = memberState.getChannel();
+            List<Member> members = new ArrayList<Member>(voiceChannel.getMembers())
             {
-                context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
-            }
-            if (context.getMember().getRoles().contains(dj))
+                {
+                    remove(context.getGuild().getSelfMember());
+                }
+            };
+            String prefix = settings.getPrefixHandler().getPrefix(context.getGuild().getIdLong());
+            if (members.size() == 1)
             {
                 musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
                 channel.sendMessage(getMessage(musicManager.getPlayer().isPaused(), author, prefix)).queue();
-                return true;
+                return;
             }
-            else
+            if (members.size() > 1)
             {
-                channel.sendMessage(EmbedUtil.errorEmbed(author).setTitle("Error")
-                        .setDescription("You need to have the DJ role to be able to do that (being alone with the bot also works)")
-                        .build()).queue();
+                Role dj = guild.getRolesByName("DJ", true).get(0);
+                if (dj == null)
+                {
+                    context.getGuild().createRole().setColor(Color.ORANGE).setName("DJ").queue();
+                    channel.sendMessage(EmbedUtil.errorEmbed(author)
+                            .setDescription("You need to have the DJ role to be able to do that (being alone with the bot also works)")
+                            .build()).queue();
+                    return;
+                }
+                if (context.getMember().getRoles().contains(dj))
+                {
+                    musicManager.getPlayer().setPaused(!musicManager.getPlayer().isPaused());
+                    channel.sendMessage(getMessage(musicManager.getPlayer().isPaused(), author, prefix)).queue();
+                }
+                else
+                {
+                    channel.sendMessage(EmbedUtil.errorEmbed(author)
+                            .setDescription("You need to have the DJ role to be able to do that (being alone with the bot also works)")
+                            .build()).queue();
+                }
             }
-        }
-        return false;
+        });
     }
 
     private MessageEmbed getMessage(boolean isPaused, User author, String prefix)

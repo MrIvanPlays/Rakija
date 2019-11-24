@@ -25,6 +25,7 @@ package com.mrivanplays.rakija.commands.music;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.Bot;
@@ -40,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows queue")
 @CommandUsage("queue")
+@CommandAliases("q")
 public class CommandQueue extends Command
 {
 
