@@ -28,10 +28,7 @@ import com.mrivanplays.jdcf.CommandManager;
 import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.jdcf.settings.prefix.DefaultPrefixHandler;
 import com.mrivanplays.rakija.Bot;
-import com.mrivanplays.rakija.commands.Command8Ball;
-import com.mrivanplays.rakija.commands.CommandRakija;
-import com.mrivanplays.rakija.commands.CommandServerInfo;
-import com.mrivanplays.rakija.commands.CommandUserInfo;
+import com.mrivanplays.rakija.commands.*;
 import com.mrivanplays.rakija.commands.music.*;
 import com.mrivanplays.teamtreesclient.FullGoalData;
 import com.mrivanplays.teamtreesclient.SiteResponse;
@@ -72,7 +69,8 @@ public class CommandRegistrar
                 new CommandRakija(bot.getEventWaiter()),
                 new CommandServerInfo(),
                 new CommandUserInfo(),
-                new Command8Ball());
+                new Command8Ball(),
+                new CommandCreatePaste(bot.getPasteServer()));
 
         commandsUsingBuilder(bot);
         musicCommands(bot, settings);
@@ -100,7 +98,7 @@ public class CommandRegistrar
     private static void commandsUsingBuilder(Bot bot)
     {
         TeamTreesClient teamTrees =
-                new TeamTreesClient(commandManager.getSettings().getExecutorService(), false);
+                new TeamTreesClient(bot.getHttpClient(), commandManager.getSettings().getExecutorService());
         Command.builder()
                 .name("ping")
                 .usage("ping")
@@ -133,7 +131,6 @@ public class CommandRegistrar
                     context.getJda().shutdownNow();
                     context.getJda().getHttpClient().connectionPool().evictAll();
                     context.getJda().getHttpClient().dispatcher().executorService().shutdown();
-                    teamTrees.shutdown();
                     return true;
                 })
                 .buildAndRegister(commandManager);

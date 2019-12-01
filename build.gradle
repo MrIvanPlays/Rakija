@@ -39,6 +39,9 @@ dependencies {
     compile ('com.mrivanplays:TeamTreesClient:1.0-SNAPSHOT') {
         exclude module: 'okhttp'
     }
+    compile('com.mrivanplays:BinClient:1.0.0-SNAPSHOT') {
+        exclude module: 'okhttp'
+    }
 }
 
 compileJava.options.encoding = 'UTF-8'

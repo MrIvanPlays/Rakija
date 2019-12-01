@@ -23,6 +23,7 @@
 package com.mrivanplays.rakija;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.mrivanplays.binclient.servers.IvanBinServer;
 import com.mrivanplays.rakija.event.RakijaEventListener;
 import com.mrivanplays.rakija.music.PlayerManager;
 import com.mrivanplays.rakija.util.CommandRegistrar;
@@ -37,6 +38,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +53,8 @@ public class Bot
     private final PlayerManager playerManager;
     private final JDA jda;
     public static Logger LOGGER = LoggerFactory.getLogger(Bot.class);
+    private final IvanBinServer pasteServer;
+    private final OkHttpClient httpClient;
 
     private Bot() throws LoginException, InterruptedException
     {
@@ -58,17 +63,20 @@ public class Bot
         rakijaEventListener = new RakijaEventListener();
         executor = Executors.newSingleThreadScheduledExecutor();
         eventWaiter = new EventWaiter(executor, false);
+        httpClient = new OkHttpClient.Builder().dispatcher(new Dispatcher(executor)).build();
         jda = new JDABuilder()
                 .setToken(config.getString("token"))
                 .setAutoReconnect(true)
                 .setActivity(Activity.listening("@Rakija help"))
                 .addEventListeners(rakijaEventListener, eventWaiter)
+                .setHttpClient(httpClient)
                 .build()
                 .awaitReady();
         EmbedUtil.setDefaultEmbed(() -> new EmbedBuilder()
                 .setFooter("https://mrivanplays.com", jda.getSelfUser().getAvatarUrl())
                 .setTimestamp(Instant.now()).setColor(Color.CYAN));
         playerManager = new PlayerManager(); // music stuff
+        pasteServer = new IvanBinServer(httpClient);
         CommandRegistrar.registerCommands(jda, this);
         LOGGER.info("Boot successful. Loaded as: " + jda.getSelfUser().getAsTag());
     }
@@ -106,5 +114,15 @@ public class Bot
     public JDA getJda()
     {
         return jda;
+    }
+
+    public IvanBinServer getPasteServer()
+    {
+        return pasteServer;
+    }
+
+    public OkHttpClient getHttpClient()
+    {
+        return httpClient;
     }
 }
