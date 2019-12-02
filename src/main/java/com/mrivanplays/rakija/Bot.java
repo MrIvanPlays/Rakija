@@ -61,7 +61,7 @@ public class Bot
         config = new RakijaConfig();
         LOGGER.info("Booting");
         rakijaEventListener = new RakijaEventListener();
-        executor = Executors.newSingleThreadScheduledExecutor();
+        executor = Executors.newScheduledThreadPool(2);
         eventWaiter = new EventWaiter(executor, false);
         httpClient = new OkHttpClient.Builder().dispatcher(new Dispatcher(executor)).build();
         jda = new JDABuilder()
