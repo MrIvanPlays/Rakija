@@ -1,4 +1,6 @@
 {
-  "token": "bot token comes here",
-  "owner": "discord user bot owner id comes here"
+    "token": "bot token comes here",
+    "owner": "discord user bot owner id comes here",
+    "logExecutedCommands": shouldWeLogExecutedCommands (true or false),
+    "commandsChannel": 22323 // (OPTIONAL) commands channel's id
 }

@@ -52,11 +52,28 @@ public class RakijaConfig
 
     public String getString(String member)
     {
+        if (object.get(member) == null)
+        {
+            return null;
+        }
         return object.get(member).asText();
     }
 
-    public int getInt(String member)
+    public long getLong(String member)
     {
-        return object.get(member).asInt();
+        if (object.get(member) == null)
+        {
+            return 0;
+        }
+        return object.get(member).asLong();
+    }
+
+    public boolean getBoolean(String member)
+    {
+        if (object.get(member) == null)
+        {
+            return false;
+        }
+        return object.get(member).asBoolean();
     }
 }

@@ -27,6 +27,7 @@ import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.CommandManager;
 import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.jdcf.settings.prefix.DefaultPrefixHandler;
+import com.mrivanplays.jdcf.translation.TranslationCollector;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.commands.*;
 import com.mrivanplays.rakija.commands.music.*;
@@ -34,6 +35,7 @@ import com.mrivanplays.teamtreesclient.FullGoalData;
 import com.mrivanplays.teamtreesclient.SiteResponse;
 import com.mrivanplays.teamtreesclient.TeamTreesClient;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -63,6 +65,16 @@ public class CommandRegistrar
         settings.setSuccessEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.GREEN).setTitle("Success"));
         settings.setPrefixHandler(new DefaultPrefixHandler(bot.getExecutor(), BotUtils.JSON_MAPPER));
         settings.getPrefixHandler().setDefaultPrefix("r!");
+        try
+        {
+            settings.setTranslations(TranslationCollector.getInstance().getTranslations("en"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        settings.setLogExecutedCommands(bot.getConfig().getBoolean("logExecutedCommands"));
+        settings.setCommandExecuteChannel(jda.getTextChannelById(bot.getConfig().getLong("commandsChannel")));
         CommandRegistrar.commandManager = new CommandManager(jda, settings);
 
         commandManager.registerCommands(

@@ -23,8 +23,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.mrivanplays:yalifslf4j:1.0-SNAPSHOT'
-    compile ('net.dv8tion:JDA:4.0.0_63') {
+    compile 'com.mrivanplays:yalifslf4j:1.0.1-SNAPSHOT'
+    compile ('net.dv8tion:JDA:4.1.0_88') {
         exclude module: 'slf4j-api'
     }
     compile ('com.jagrosh:jda-utilities:3.0.2') {
@@ -34,8 +34,8 @@ dependencies {
         exclude module: 'json'
     }
 
-    compile 'com.sedmelluq:lavaplayer:1.3.27'
-    compile 'com.mrivanplays:JDCF:1.0.2-SNAPSHOT'
+    compile 'com.sedmelluq:lavaplayer:1.3.32'
+    compile 'com.mrivanplays:JDCF:1.0.3-SNAPSHOT'
     compile ('com.mrivanplays:TeamTreesClient:1.0-SNAPSHOT') {
         exclude module: 'okhttp'
     }
