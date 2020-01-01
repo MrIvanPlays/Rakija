@@ -1,35 +1,16 @@
-/*
-    Copyright (c) 2019 Ivan Pekov
-    Copyright (c) 2019 Contributors
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-*/
 package com.mrivanplays.rakija.util;
 
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.CommandManager;
 import com.mrivanplays.jdcf.settings.CommandSettings;
-import com.mrivanplays.jdcf.settings.prefix.DefaultPrefixHandler;
+import com.mrivanplays.jdcf.settings.prefix.PrefixHandler;
 import com.mrivanplays.jdcf.translation.TranslationCollector;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.commands.*;
+import com.mrivanplays.rakija.commands.image.CommandCat;
+import com.mrivanplays.rakija.commands.image.CommandDog;
+import com.mrivanplays.rakija.commands.image.CommandMeme;
 import com.mrivanplays.rakija.commands.music.*;
 import com.mrivanplays.teamtreesclient.FullGoalData;
 import com.mrivanplays.teamtreesclient.SiteResponse;
@@ -63,7 +44,7 @@ public class CommandRegistrar
                 .setTitle("Error")
                 .setDescription("You don't have permission to perform this command."));
         settings.setSuccessEmbed(() -> EmbedUtil.defaultEmbed().setColor(Color.GREEN).setTitle("Success"));
-        settings.setPrefixHandler(new DefaultPrefixHandler(bot.getExecutor(), BotUtils.JSON_MAPPER));
+        settings.setPrefixHandler(PrefixHandler.defaultHandler(BotUtils.JSON_MAPPER));
         settings.getPrefixHandler().setDefaultPrefix("r!");
         try
         {
@@ -82,7 +63,12 @@ public class CommandRegistrar
                 new CommandServerInfo(),
                 new CommandUserInfo(),
                 new Command8Ball(),
-                new CommandCreatePaste(bot.getPasteServer()));
+                new CommandCreatePaste(bot.getPasteServer()),
+                new CommandMeme(),
+                new CommandDog(),
+                new CommandCat(),
+                new CommandBroadcast(),
+                new CommandEval(bot));
 
         commandsUsingBuilder(bot);
         musicCommands(bot, settings);
@@ -161,15 +147,6 @@ public class CommandRegistrar
                         FullGoalData actualData = data.get();
                         EmbedBuilder embedBuilder = EmbedUtil.successEmbed(context.getAuthor()).setTitle("Let's go TeamTrees!");
                         embedBuilder.addField("Trees: ", BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTrees()), true);
-                        embedBuilder.addField(
-                                "Trees left: ",
-                                BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTreesLeft()),
-                                true);
-                        embedBuilder.addField(
-                                "Percentage done: ",
-                                BotUtils.DECIMAL_FORMAT_PERCENTAGE.format(actualData.getPercentDone()),
-                                true);
-                        embedBuilder.addField("Days left: ", String.valueOf(actualData.getDaysLeft()), true);
                         context.getChannel().sendMessage(embedBuilder.build()).queue();
                         return true;
                     }

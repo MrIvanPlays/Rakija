@@ -35,7 +35,7 @@ dependencies {
     }
 
     compile 'com.sedmelluq:lavaplayer:1.3.32'
-    compile 'com.mrivanplays:JDCF:1.0.3-SNAPSHOT'
+    compile 'com.mrivanplays:JDCF:1.0.4-SNAPSHOT'
     compile ('com.mrivanplays:TeamTreesClient:1.0-SNAPSHOT') {
         exclude module: 'okhttp'
     }
@@ -43,6 +43,7 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'json'
     }
+    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-4'
 }
 
 compileJava.options.encoding = 'UTF-8'
