@@ -23,27 +23,27 @@ repositories {
 }
 
 dependencies {
-    compile 'com.mrivanplays:yalifslf4j:1.0.1-SNAPSHOT'
-    compile ('net.dv8tion:JDA:4.1.0_88') {
+    implementation group: 'com.mrivanplays', name: 'yalifslf4j', version: '1.0.1-SNAPSHOT'
+    implementation(group: 'net.dv8tion', name: 'JDA', version: '4.1.0_93') {
         exclude module: 'slf4j-api'
     }
-    compile ('com.jagrosh:jda-utilities:3.0.2') {
+    implementation(group: 'com.jagrosh', name: 'jda-utilities', version: '3.0.2') {
         exclude module: 'jda-utilities-command'
         exclude module: 'jda-utilities-examples'
         exclude module: 'slf4j'
         exclude module: 'json'
     }
 
-    compile 'com.sedmelluq:lavaplayer:1.3.32'
-    compile 'com.mrivanplays:JDCF:1.0.4-SNAPSHOT'
-    compile ('com.mrivanplays:TeamTreesClient:1.0-SNAPSHOT') {
+    implementation group: 'com.sedmelluq', name: 'lavaplayer', version: '1.3.32'
+    implementation group: 'com.mrivanplays', name: 'JDCF', version: '1.0.4-SNAPSHOT'
+    implementation(group: 'com.mrivanplays', name: 'TeamTreesClient', version: '1.0-SNAPSHOT') {
         exclude module: 'okhttp'
     }
-    compile('com.mrivanplays:BinClient:1.0.1-SNAPSHOT') {
+    implementation(group: 'com.mrivanplays', name: 'BinClient', version: '1.0.1-SNAPSHOT') {
         exclude module: 'okhttp'
         exclude module: 'json'
     }
-    compile 'org.codehaus.groovy:groovy-jsr223:3.0.0-alpha-4'
+    implementation group: 'org.codehaus.groovy', name: 'groovy-jsr223', version: '3.0.0-alpha-4'
 }
 
 compileJava.options.encoding = 'UTF-8'
