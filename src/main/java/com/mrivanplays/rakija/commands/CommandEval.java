@@ -28,6 +28,7 @@ public class CommandEval extends Command
                 "import java.lang.*\n" +
                 "import java.util.*\n" +
                 "import java.util.concurrent.*\n" +
+                "import java.util.stream.*\n" +
                 "import net.dv8tion.jda.api.*\n" +
                 "import net.dv8tion.jda.api.entities.*\n" +
                 "import net.dv8tion.jda.api.managers.*\n";
