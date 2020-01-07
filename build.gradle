@@ -15,11 +15,15 @@ java {
 
 repositories {
     jcenter()
-    mavenLocal()
     mavenCentral()
     maven {
-        url 'https://repo.mrivanplays.com/repository/ivan'
+        url 'https://repo.mrivanplays.com/repository/ivan/'
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 10, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
 }
 
 dependencies {
