@@ -11,7 +11,10 @@ import com.mrivanplays.rakija.commands.*;
 import com.mrivanplays.rakija.commands.image.CommandCat;
 import com.mrivanplays.rakija.commands.image.CommandDog;
 import com.mrivanplays.rakija.commands.image.CommandMeme;
+import com.mrivanplays.rakija.commands.moderation.CommandPurge;
 import com.mrivanplays.rakija.commands.music.*;
+import com.mrivanplays.rakija.commands.ticket.CommandCloseTicket;
+import com.mrivanplays.rakija.commands.ticket.CommandCreateTicket;
 import com.mrivanplays.teamtreesclient.FullGoalData;
 import com.mrivanplays.teamtreesclient.SiteResponse;
 import com.mrivanplays.teamtreesclient.TeamTreesClient;
@@ -21,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
 public class CommandRegistrar
@@ -68,7 +72,10 @@ public class CommandRegistrar
                 new CommandDog(),
                 new CommandCat(),
                 new CommandBroadcast(),
-                new CommandEval(bot));
+                new CommandEval(bot),
+                new CommandCreateTicket(bot),
+                new CommandCloseTicket(bot),
+                new CommandPurge(bot));
 
         commandsUsingBuilder(bot);
         musicCommands(bot, settings);
@@ -91,6 +98,11 @@ public class CommandRegistrar
                 new CommandSkip(bot),
                 new CommandVolume(bot),
                 new CommandRepeat(bot));
+    }
+
+    public static String getPrefix(Guild guild)
+    {
+        return commandManager.getSettings().getPrefixHandler().getPrefix(guild.getIdLong());
     }
 
     private static void commandsUsingBuilder(Bot bot)

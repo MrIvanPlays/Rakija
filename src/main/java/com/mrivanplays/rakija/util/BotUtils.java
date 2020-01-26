@@ -2,6 +2,7 @@ package com.mrivanplays.rakija.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.DecimalFormat;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Message;
@@ -60,5 +61,16 @@ public class BotUtils
             triggeringMessage.delete().queueAfter(15, TimeUnit.SECONDS);
             return true;
         }
+    }
+
+    public static int generateRandomNumber(int length)
+    {
+        StringBuilder number = new StringBuilder();
+        for (int i = 0; i < length; i++)
+        {
+            int random = ThreadLocalRandom.current().nextInt(0, 9);
+            number.append(random);
+        }
+        return Integer.parseInt(number.toString());
     }
 }
