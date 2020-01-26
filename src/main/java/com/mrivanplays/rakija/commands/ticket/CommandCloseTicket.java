@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Message;
@@ -122,9 +123,11 @@ public class CommandCloseTicket extends Command
                     {
                         writer.write(document.normalise().html().replace("{title}", "Ticket #" + ticketId));
                     }
-                    transcriptChannel.sendMessage("Ticket #" + ticketId + " was closed by " + context.getAuthor().getAsTag()).queue();
-                    transcriptChannel.sendMessage("Transcript for ticket #" + ticketId).queue();
-                    transcriptChannel.sendFile(temp, ticketId + ".html").queue(message -> temp.delete());
+                    EmbedBuilder embed = EmbedUtil.successEmbed(context.getAuthor())
+                            .setTitle("Ticket #" + ticketId + " was closed")
+                            .setDescription("Closed by: " + context.getAuthor().getAsTag());
+                    transcriptChannel.sendMessage(embed.build()).queue();
+                    transcriptChannel.sendFile(temp, "transcript-" + ticketId + ".html").queue(message -> temp.delete());
                 }
                 catch (IOException e4)
                 {
