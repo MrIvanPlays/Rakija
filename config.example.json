@@ -11,6 +11,7 @@
         "should be blacklisted from",
         "clearing messages"
     ],
+    "ticketsCategoryName": "category name of where the tickets will be saved",
     "transcriptsChannel": 23232323 // tickets transcripts channel's id,
     "logExecutedCommands": shouldWeLogExecutedCommands (true or false),
     "commandsChannel": 22323 // (OPTIONAL) commands channel's id

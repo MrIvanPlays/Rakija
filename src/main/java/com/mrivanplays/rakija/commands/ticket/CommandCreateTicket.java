@@ -13,8 +13,6 @@ import com.mrivanplays.rakija.util.EmbedUtil;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("createticket [reason]")
@@ -37,25 +35,13 @@ public class CommandCreateTicket extends Command
         {
             int number = BotUtils.generateRandomNumber(7);
             context.getGuild().createTextChannel("ticket-" + number)
-                    .setParent(context.getGuild().getCategoriesByName("tickets", true).get(0))
+                    .setParent(context.getGuild().getCategoriesByName(
+                            bot.getConfig().getString("ticketsCategoryName"), true).get(0))
                     .queue(channel ->
                     {
-                        for (Member member : context.getGuild().getMembers())
-                        {
-                            for (Role moderator : bot.getConfig().getStringArrayAsRole("moderatorGroups", context.getGuild()))
-                            {
-                                if (member.getRoles().contains(moderator) || member.getId().equalsIgnoreCase(context.getMember().getId()))
-                                {
-                                    channel.createPermissionOverride(member)
-                                            .setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)
-                                            .queue();
-                                    continue;
-                                }
-                                channel.createPermissionOverride(member)
-                                        .setDeny(Permission.VIEW_CHANNEL)
-                                        .queue();
-                            }
-                        }
+                        channel.createPermissionOverride(context.getMember())
+                                .setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE)
+                                .queue();
                         EmbedBuilder ticketChannelEmbed = EmbedUtil.embedWithAuthor(context.getAuthor())
                                 .setColor(0xCF40FA)
                                 .setTitle(context.getGuild().getName() + " ticket opened")
