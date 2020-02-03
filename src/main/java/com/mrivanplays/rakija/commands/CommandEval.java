@@ -8,6 +8,7 @@ import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import groovy.lang.GroovyShell;
+import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("eval [code]")
@@ -35,13 +36,14 @@ public class CommandEval extends Command
     }
 
     @Override
+    public boolean hasPermission(@NotNull Member member, @NotNull String alias)
+    {
+        return member.getId().equalsIgnoreCase(bot.getConfig().getString("owner"));
+    }
+
+    @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        if (!context.getAuthor().getId().equalsIgnoreCase(bot.getConfig().getString("owner")))
-        {
-            context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor()).setDescription("Only bot owner can eval!").build()).queue();
-            return false;
-        }
         if (args.size() == 0)
         {
             context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor()).setDescription("Missing arguments.").build()).queue();

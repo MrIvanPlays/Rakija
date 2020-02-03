@@ -3,6 +3,7 @@ package com.mrivanplays.rakija.util;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.CommandManager;
+import com.mrivanplays.jdcf.builtin.CommandShutdown;
 import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.jdcf.settings.prefix.PrefixHandler;
 import com.mrivanplays.jdcf.translation.TranslationCollector;
@@ -75,7 +76,8 @@ public class CommandRegistrar
                 new CommandEval(bot),
                 new CommandCreateTicket(bot),
                 new CommandCloseTicket(bot),
-                new CommandPurge(bot));
+                new CommandPurge(bot),
+                new CommandShutdown(bot.getConfig().getString("owner")));
 
         commandsUsingBuilder(bot);
         musicCommands(bot, settings);
@@ -107,8 +109,6 @@ public class CommandRegistrar
 
     private static void commandsUsingBuilder(Bot bot)
     {
-        TeamTreesClient teamTrees =
-                new TeamTreesClient(bot.getHttpClient(), commandManager.getSettings().getExecutorService());
         Command.builder()
                 .name("ping")
                 .usage("ping")
@@ -122,47 +122,6 @@ public class CommandRegistrar
                             .setDescription("Gateway ping: " + gatewayPing + " \n Rest ping: " + restPing).build())
                             .queue();
                     return true;
-                })
-                .buildAndRegister(commandManager);
-
-        Command.builder()
-                .name("shutdown")
-                .executor((context, args) ->
-                {
-                    User author = context.getAuthor();
-                    if (!author.getId().equalsIgnoreCase(bot.getConfig().getString("owner")))
-                    {
-                        context.getChannel().sendMessage(EmbedUtil.noPermissionEmbed(author))
-                                .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
-                        context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
-                        return false;
-                    }
-                    Bot.LOGGER.info("Bot shutting down");
-                    context.getJda().shutdownNow();
-                    context.getJda().getHttpClient().connectionPool().evictAll();
-                    context.getJda().getHttpClient().dispatcher().executorService().shutdown();
-                    return true;
-                })
-                .buildAndRegister(commandManager);
-
-        Command.builder()
-                .name("teamtrees")
-                .usage("teamtrees")
-                .aliases("trees", "teamtreesinfo", "treesinfo")
-                .description("Shows stats about the teamtrees goal")
-                .executor((context, args) ->
-                {
-                    SiteResponse<FullGoalData> siteData = teamTrees.retrieveFullData().join();
-                    Optional<FullGoalData> data = siteData.getData();
-                    if (data.isPresent())
-                    {
-                        FullGoalData actualData = data.get();
-                        EmbedBuilder embedBuilder = EmbedUtil.successEmbed(context.getAuthor()).setTitle("Let's go TeamTrees!");
-                        embedBuilder.addField("Trees: ", BotUtils.DECIMAL_FORMAT_NUMBER.format(actualData.getTrees()), true);
-                        context.getChannel().sendMessage(embedBuilder.build()).queue();
-                        return true;
-                    }
-                    return false;
                 })
                 .buildAndRegister(commandManager);
     }
