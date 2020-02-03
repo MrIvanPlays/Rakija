@@ -35,6 +35,7 @@ public class CommandCreateTicket extends Command
             context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor())
                     .setDescription("You should specify a reason for your ticket!").build())
                     .queue(msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+            context.getMessage().delete().queueAfter(15, TimeUnit.SECONDS);
             return false;
         }
         String reason = args.joinArgumentsSpace(0);

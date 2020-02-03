@@ -19,10 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.ISnowflake;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -80,6 +77,19 @@ public class CommandCloseTicket extends Command
                     for (Message message : messages)
                     {
                         String messageContent = message.getContentRaw();
+                        if (!message.getEmbeds().isEmpty())
+                        {
+                            for (MessageEmbed embed : message.getEmbeds())
+                            {
+                                if (embed.getFields().stream().anyMatch(field -> field.getName() != null
+                                        && field.getName().equalsIgnoreCase("Reason")))
+                                {
+                                    messageContent = "Ticket reason: " + embed.getFields().stream()
+                                            .filter(field -> field.getName().equalsIgnoreCase("Reason"))
+                                            .findFirst().get().getValue();
+                                }
+                            }
+                        }
                         if (messageContent.isEmpty())
                         {
                             continue;
@@ -105,10 +115,15 @@ public class CommandCloseTicket extends Command
 
                         if (messageContent.contains("```"))
                         {
-                            // todo: fix this
+                            // todo: remove language if present
+                            // tried methods: code = code.replace(code.split("\n")[0], "");
+                            // disadvantages: leaves blank row if language present,
+                            // if language isn't present wipes out first line of the code.
                             String code = messageContent.replace("```", "");
+                            Element preElement = document.createElement("pre");
                             Element codeElement = document.createElement("code").text(code);
-                            messageContainer.appendChild(codeElement);
+                            preElement.appendChild(codeElement);
+                            messageContainer.appendChild(preElement);
                         }
                         else
                         {
