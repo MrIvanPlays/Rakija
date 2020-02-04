@@ -54,6 +54,7 @@ public class CommandRegistrar
         }
         settings.setLogExecutedCommands(bot.getConfig().getBoolean("logExecutedCommands"));
         settings.setCommandExecuteChannel(jda.getTextChannelById(bot.getConfig().getLong("commandsChannel")));
+        settings.setAllowDMSCommands(true);
         CommandRegistrar.commandManager = new CommandManager(jda, settings);
 
         commandManager.registerCommands(
@@ -78,7 +79,7 @@ public class CommandRegistrar
 
     public static boolean dispatchCommand(CommandExecutionContext context, String commandLine)
     {
-        return commandManager.dispatchCommand(context.getJda(), context.getGuild(), context.getChannel(), context.getMember(), commandLine);
+        return commandManager.dispatchCommand(context.getJda(), context.getGuild(), context.getTextChannel(), context.getMember(), commandLine);
     }
 
     private static void musicCommands(Bot bot, CommandSettings settings)

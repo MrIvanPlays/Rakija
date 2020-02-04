@@ -37,7 +37,7 @@ public class CommandPause extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         User author = context.getAuthor();
         Guild guild = context.getGuild();
         Member selfMember = guild.getSelfMember();

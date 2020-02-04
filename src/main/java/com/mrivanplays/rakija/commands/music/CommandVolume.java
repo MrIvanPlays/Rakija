@@ -80,7 +80,7 @@ public class CommandVolume extends Command
         });
     }
 
-    private void performExecution(TextChannel channel, AudioPlayer player, User author, CommandArguments args)
+    private void performExecution(MessageChannel channel, AudioPlayer player, User author, CommandArguments args)
     {
         args.next(argContext ->
         {

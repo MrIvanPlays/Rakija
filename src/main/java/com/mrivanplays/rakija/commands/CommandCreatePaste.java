@@ -18,7 +18,7 @@ public class CommandCreatePaste extends Command
 
     public CommandCreatePaste(IvanBinServer server)
     {
-        super("createPaste");
+        super("createPaste", false);
         this.server = server;
     }
 

@@ -23,7 +23,7 @@ public class CommandDog extends Command
 
     public CommandDog()
     {
-        super("dog");
+        super("dog", false);
     }
 
     @Override

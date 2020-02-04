@@ -2,6 +2,7 @@ package com.mrivanplays.rakija.commands;
 
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
+import com.mrivanplays.jdcf.PermissionCheckContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
@@ -36,9 +37,9 @@ public class CommandEval extends Command
     }
 
     @Override
-    public boolean hasPermission(@NotNull Member member, @NotNull String alias)
+    public boolean hasPermission(@NotNull PermissionCheckContext context)
     {
-        return member.getId().equalsIgnoreCase(bot.getConfig().getString("owner"));
+        return context.getMember().getId().equalsIgnoreCase(bot.getConfig().getString("owner"));
     }
 
     @Override

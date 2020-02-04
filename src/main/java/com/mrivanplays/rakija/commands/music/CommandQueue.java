@@ -14,7 +14,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import java.awt.Color;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows queue")
@@ -34,7 +34,7 @@ public class CommandQueue extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         EmbedBuilder builder = EmbedUtil.embedWithAuthor(context.getAuthor()).setColor(Color.BLUE).setTitle("Showing tracks in queue");
         GuildMusicManager musicManager = bot.getPlayerManager().getGuildMusicManager(context.getGuild());
         if (musicManager.getPlayer().getPlayingTrack() != null)

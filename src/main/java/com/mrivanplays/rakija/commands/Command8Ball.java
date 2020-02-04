@@ -21,7 +21,7 @@ public class Command8Ball extends Command
 
     public Command8Ball()
     {
-        super("8ball");
+        super("8ball", false);
         answers = new ArrayList<String>()
         {
             {

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Clears the messages specified")
@@ -35,7 +35,7 @@ public class CommandPurge extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         args.nextInt().ifPresent(messageCount ->
         {
             List<String> blacklistedChannels = bot.getConfig().getStringArray("purgeBlacklist");
@@ -59,7 +59,8 @@ public class CommandPurge extends Command
             {
                 channel.sendMessage(EmbedUtil.successEmbed(context.getAuthor()).setDescription("Cleared " + size + " messages").build())
                         .queue(message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
-            }).exceptionally(error -> {
+            }).exceptionally(error ->
+            {
                 String cause = "";
                 if (error.getCause() != null)
                 {

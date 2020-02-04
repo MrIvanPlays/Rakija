@@ -40,7 +40,7 @@ public class CommandSkip extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         User author = context.getAuthor();
         PlayerManager playerManager = bot.getPlayerManager();
         GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());

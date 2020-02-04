@@ -36,7 +36,7 @@ public class CommandRepeat extends Command
         GuildMusicManager musicManager = bot.getPlayerManager().getGuildMusicManager(context.getGuild());
         GuildVoiceState botVoiceState = context.getGuild().getSelfMember().getVoiceState();
         GuildVoiceState memberVoiceState = context.getMember().getVoiceState();
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         User author = context.getAuthor();
         return BotUtils.checkVoiceStates(channel, botVoiceState, memberVoiceState, author, context.getMessage(), () ->
         {

@@ -23,7 +23,7 @@ public class CommandCat extends Command
 
     public CommandCat()
     {
-        super("cat");
+        super("cat", false);
     }
 
     @Override

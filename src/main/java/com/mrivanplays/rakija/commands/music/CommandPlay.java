@@ -38,7 +38,7 @@ public class CommandPlay extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        TextChannel channel = context.getTextChannel();
         AudioManager audioManager = context.getGuild().getAudioManager();
         if (!audioManager.isConnected())
         {

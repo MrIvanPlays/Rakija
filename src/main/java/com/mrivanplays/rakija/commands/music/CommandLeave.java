@@ -32,7 +32,7 @@ public class CommandLeave extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         User author = context.getAuthor();
         Member member = context.getMember();
 

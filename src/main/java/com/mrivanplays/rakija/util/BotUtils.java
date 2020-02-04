@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 public class BotUtils
 {
@@ -23,7 +20,7 @@ public class BotUtils
         JSON_MAPPER = new ObjectMapper();
     }
 
-    public static boolean checkVoiceStates(TextChannel responseChannel, GuildVoiceState botState, GuildVoiceState memberState,
+    public static boolean checkVoiceStates(MessageChannel responseChannel, GuildVoiceState botState, GuildVoiceState memberState,
                                            User author, Message triggeringMessage, Runnable checksPassed)
     {
         if (botState.inVoiceChannel())

@@ -13,7 +13,7 @@ import com.mrivanplays.rakija.util.EmbedUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import java.util.concurrent.TimeUnit;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows the currently playing track")
@@ -33,7 +33,7 @@ public class CommandNowPlaying extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel channel = context.getChannel();
+        MessageChannel channel = context.getChannel();
         PlayerManager playerManager = bot.getPlayerManager();
         GuildMusicManager musicManager = playerManager.getGuildMusicManager(context.getGuild());
         AudioPlayer player = musicManager.getPlayer();

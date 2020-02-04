@@ -22,7 +22,7 @@ public class CommandMeme extends Command
 
     public CommandMeme()
     {
-        super("meme");
+        super("meme", false);
     }
 
     @Override
