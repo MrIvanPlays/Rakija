@@ -23,7 +23,7 @@ public class CommandEval extends Command
 
     public CommandEval(Bot bot)
     {
-        super("eval");
+        super("eval", false);
         this.bot = bot;
         this.engine = new GroovyShell();
         this.imports = "import java.io.*\n" +
@@ -39,7 +39,7 @@ public class CommandEval extends Command
     @Override
     public boolean hasPermission(@NotNull PermissionCheckContext context)
     {
-        return context.getMember().getId().equalsIgnoreCase(bot.getConfig().getString("owner"));
+        return context.getUser().getId().equalsIgnoreCase(bot.getConfig().getString("owner"));
     }
 
     @Override
