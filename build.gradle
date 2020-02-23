@@ -28,7 +28,7 @@ configurations.all {
 
 dependencies {
     implementation group: 'com.mrivanplays', name: 'yalifslf4j-base', version: '1.0.4-SNAPSHOT'
-    implementation group: 'com.mrivanplays', name: 'yalifslf4j-configprovider-jackson', version: '1.0.3-SNAPSHOT'
+    implementation group: 'com.mrivanplays', name: 'yalifslf4j-configprovider-jackson', version: '1.0.4-SNAPSHOT'
     implementation(group: 'net.dv8tion', name: 'JDA', version: '4.1.1_108') {
         exclude module: 'slf4j-api'
     }

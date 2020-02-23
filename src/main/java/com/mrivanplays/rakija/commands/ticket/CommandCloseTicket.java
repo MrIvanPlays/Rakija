@@ -41,7 +41,7 @@ public class CommandCloseTicket extends Command
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)
     {
-        TextChannel ticketChannel = context.getChannel();
+        TextChannel ticketChannel = context.getTextChannel();
         if (!ticketChannel.getName().contains("ticket"))
         {
             context.getChannel().sendMessage(EmbedUtil.errorEmbed(context.getAuthor()).setDescription("This is not a ticket!").build())
