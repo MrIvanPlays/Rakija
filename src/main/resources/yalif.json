@@ -1,8 +1,7 @@
 {
-  "loggingFormat": "[HH:mm:ss] [%level]: %msg",
+  "loggingFormat": "[{HH:mm:ss} %level]: %msg",
   "logFileDirectory": "./logs/",
-  "timeDateFormat": "HH:mm:ss",
-  "fileLogFormat": "[HH:mm:ss] [%threadName] [%loggerName] [%level]: %msg",
+  "fileLogFormat": "[{dd/MM/yyyy HH:mm:ss} %threadName/%level] [%loggerName]: %msg",
   "disabledLevels": [
     "debug",
     "trace"
