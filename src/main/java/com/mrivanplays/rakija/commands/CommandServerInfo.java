@@ -3,6 +3,7 @@ package com.mrivanplays.rakija.commands;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.EmbedUtil;
@@ -14,13 +15,9 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows various data about the current server")
 @CommandUsage("serverinfo")
+@CommandAliases("serverinfo")
 public class CommandServerInfo extends Command
 {
-
-    public CommandServerInfo()
-    {
-        super("serverinfo");
-    }
 
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)

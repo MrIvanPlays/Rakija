@@ -3,8 +3,10 @@ package com.mrivanplays.rakija.commands.music;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.music.PlayerManager;
@@ -25,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Skips the current song")
 @CommandUsage("skip")
+@CommandAliases("skip")
+@MarkGuildOnly
 public class CommandSkip extends Command
 {
 
@@ -33,7 +37,6 @@ public class CommandSkip extends Command
 
     public CommandSkip(Bot bot)
     {
-        super("skip");
         this.bot = bot;
     }
 

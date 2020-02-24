@@ -3,6 +3,7 @@ package com.mrivanplays.rakija.commands.ticket;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.Bot;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("createticket [reason]")
 @CommandDescription("Creates a new ticket")
+@CommandAliases("createticket")
 public class CommandCreateTicket extends Command
 {
 
@@ -23,7 +25,6 @@ public class CommandCreateTicket extends Command
 
     public CommandCreateTicket(Bot bot)
     {
-        super("createticket");
         this.bot = bot;
     }
 

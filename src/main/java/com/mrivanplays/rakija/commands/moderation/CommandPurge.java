@@ -2,11 +2,13 @@ package com.mrivanplays.rakija.commands.moderation;
 
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
+import com.mrivanplays.jdcf.PermissionCheckContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.args.FailReason;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.time.OffsetDateTime;
@@ -20,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Clears the messages specified")
 @CommandUsage("purge [number of messages]")
-@CommandAliases("clear|rm|removemessages")
+@CommandAliases("purge|clear|rm|removemessages")
+@MarkGuildOnly
 public class CommandPurge extends Command
 {
 
@@ -28,8 +31,13 @@ public class CommandPurge extends Command
 
     public CommandPurge(Bot bot)
     {
-        super("purge", Permission.MESSAGE_MANAGE);
         this.bot = bot;
+    }
+
+    @Override
+    public boolean hasPermission(@NotNull PermissionCheckContext context)
+    {
+        return context.getMember().hasPermission(Permission.MESSAGE_MANAGE);
     }
 
     @Override

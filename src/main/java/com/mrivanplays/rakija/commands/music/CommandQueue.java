@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.music.RequestedAudioTrack;
@@ -19,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows queue")
 @CommandUsage("queue")
-@CommandAliases("q")
+@CommandAliases("queue")
+@MarkGuildOnly
 public class CommandQueue extends Command
 {
 
@@ -27,7 +29,6 @@ public class CommandQueue extends Command
 
     public CommandQueue(Bot bot)
     {
-        super("queue");
         this.bot = bot;
     }
 

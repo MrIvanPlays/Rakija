@@ -4,16 +4,19 @@ import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.PermissionCheckContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import groovy.lang.GroovyShell;
-import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("eval [code]")
 @CommandDescription("Takes groovy code and evaluates it")
+@CommandAliases("eval")
+@MarkGuildOnly
 public class CommandEval extends Command
 {
 
@@ -23,7 +26,6 @@ public class CommandEval extends Command
 
     public CommandEval(Bot bot)
     {
-        super("eval", false);
         this.bot = bot;
         this.engine = new GroovyShell();
         this.imports = "import java.io.*\n" +

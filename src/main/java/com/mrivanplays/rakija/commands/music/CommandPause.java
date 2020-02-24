@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
@@ -20,7 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Pauses/Plays the currently playing song")
 @CommandUsage("pause")
-@CommandAliases("resume")
+@CommandAliases("pause|resume")
+@MarkGuildOnly
 public class CommandPause extends Command
 {
 
@@ -29,7 +31,6 @@ public class CommandPause extends Command
 
     public CommandPause(Bot bot, CommandSettings settings)
     {
-        super("pause");
         this.bot = bot;
         this.settings = settings;
     }

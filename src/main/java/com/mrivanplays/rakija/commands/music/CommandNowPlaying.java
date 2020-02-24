@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.music.GuildMusicManager;
 import com.mrivanplays.rakija.music.PlayerManager;
@@ -18,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Shows the currently playing track")
 @CommandUsage("nowplaying")
-@CommandAliases("np")
+@CommandAliases("nowplaying|np")
+@MarkGuildOnly
 public class CommandNowPlaying extends Command
 {
 
@@ -26,7 +28,6 @@ public class CommandNowPlaying extends Command
 
     public CommandNowPlaying(Bot bot)
     {
-        super("nowplaying");
         this.bot = bot;
     }
 

@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.CommandRegistrar;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Run it and see what it will do \uD83E\uDD14")
 @CommandUsage("rakija")
+@CommandAliases("rakija")
 public class CommandRakija extends Command
 {
 
@@ -27,7 +29,6 @@ public class CommandRakija extends Command
 
     public CommandRakija(EventWaiter eventWaiter)
     {
-        super("rakija");
         this.eventWaiter = eventWaiter;
     }
 

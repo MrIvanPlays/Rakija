@@ -3,6 +3,7 @@ package com.mrivanplays.rakija.commands.ticket;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.Bot;
@@ -27,6 +28,7 @@ import org.jsoup.nodes.Element;
 
 @CommandDescription("Closes the ticket where it was ran")
 @CommandUsage("closeticket")
+@CommandAliases("closeticket")
 public class CommandCloseTicket extends Command
 {
 
@@ -34,7 +36,6 @@ public class CommandCloseTicket extends Command
 
     public CommandCloseTicket(Bot bot)
     {
-        super("closeticket");
         this.bot = bot;
     }
 

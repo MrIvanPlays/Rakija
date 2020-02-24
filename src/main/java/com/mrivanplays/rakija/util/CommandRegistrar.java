@@ -71,9 +71,9 @@ public class CommandRegistrar
                 new CommandCreateTicket(bot),
                 new CommandCloseTicket(bot),
                 new CommandPurge(bot),
-                new CommandShutdown(bot.getConfig().getString("owner")));
+                new CommandShutdown(bot.getConfig().getString("owner")),
+                new CommandPing());
 
-        commandsUsingBuilder(bot);
         musicCommands(bot, settings);
     }
 
@@ -99,24 +99,5 @@ public class CommandRegistrar
     public static String getPrefix(Guild guild)
     {
         return commandManager.getSettings().getPrefixHandler().getPrefix(guild.getIdLong());
-    }
-
-    private static void commandsUsingBuilder(Bot bot)
-    {
-        Command.builder()
-                .name("ping")
-                .usage("ping")
-                .description("Shows the latency of the bot")
-                .executor((context, args) ->
-                {
-                    long gatewayPing = context.getJda().getGatewayPing();
-                    long restPing = context.getJda().getRestPing().complete();
-                    context.getChannel().sendMessage(EmbedUtil.embedWithAuthor(context.getAuthor())
-                            .setTitle("Latency")
-                            .setDescription("Gateway ping: " + gatewayPing + " \n Rest ping: " + restPing).build())
-                            .queue();
-                    return true;
-                })
-                .buildAndRegister(commandManager);
     }
 }

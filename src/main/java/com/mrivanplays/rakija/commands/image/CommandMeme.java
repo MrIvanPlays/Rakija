@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.BotUtils;
@@ -17,13 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("meme")
 @CommandDescription("Shows a random reddit meme")
+@CommandAliases("meme")
 public class CommandMeme extends Command
 {
-
-    public CommandMeme()
-    {
-        super("meme", false);
-    }
 
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)

@@ -3,6 +3,7 @@ package com.mrivanplays.rakija.commands;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.EmbedUtil;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("8ball (question)")
 @CommandDescription("Answers your question")
+@CommandAliases("8ball")
 public class Command8Ball extends Command
 {
 
@@ -21,7 +23,6 @@ public class Command8Ball extends Command
 
     public Command8Ball()
     {
-        super("8ball", false);
         answers = new ArrayList<String>()
         {
             {

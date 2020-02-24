@@ -4,8 +4,10 @@ import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.args.FailReason;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.BotUtils;
 import com.mrivanplays.rakija.util.EmbedUtil;
@@ -18,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Changes the volume of the bot.")
 @CommandUsage("volume (new volume)")
+@CommandAliases("volume")
+@MarkGuildOnly
 public class CommandVolume extends Command
 {
 
@@ -25,7 +29,6 @@ public class CommandVolume extends Command
 
     public CommandVolume(Bot bot)
     {
-        super("volume");
         this.bot = bot;
     }
 

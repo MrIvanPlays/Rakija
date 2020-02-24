@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
@@ -15,14 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Makes the bot join into your voice channel if you are in a voice channel")
 @CommandUsage("join")
-@CommandAliases("j")
+@CommandAliases("join|j")
+@MarkGuildOnly
 public class CommandJoin extends Command
 {
-
-    public CommandJoin()
-    {
-        super("join");
-    }
 
     @Override
     public boolean execute(@NotNull CommandExecutionContext context, @NotNull CommandArguments args)

@@ -4,6 +4,7 @@ import com.mrivanplays.binclient.servers.IvanBinServer;
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
 import com.mrivanplays.rakija.util.EmbedUtil;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandDescription("Creates a paste with the specified code")
 @CommandUsage("createpaste [code]")
+@CommandAliases("createpaste")
 public class CommandCreatePaste extends Command
 {
 
@@ -18,7 +20,6 @@ public class CommandCreatePaste extends Command
 
     public CommandCreatePaste(IvanBinServer server)
     {
-        super("createPaste", false);
         this.server = server;
     }
 

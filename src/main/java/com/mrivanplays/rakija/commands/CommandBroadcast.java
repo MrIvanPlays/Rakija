@@ -2,21 +2,27 @@ package com.mrivanplays.rakija.commands;
 
 import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
+import com.mrivanplays.jdcf.PermissionCheckContext;
 import com.mrivanplays.jdcf.args.CommandArguments;
+import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import org.jetbrains.annotations.NotNull;
 
 @CommandUsage("broadcast [message]")
 @CommandDescription("Broadcasts a message in the channel you currently are")
+@CommandAliases("broadcast")
+@MarkGuildOnly
 public class CommandBroadcast extends Command
 {
 
-    public CommandBroadcast()
+    @Override
+    public boolean hasPermission(@NotNull PermissionCheckContext context)
     {
-        super("broadcast", Permission.ADMINISTRATOR);
+        return context.getMember().hasPermission(Permission.ADMINISTRATOR);
     }
 
     @Override
