@@ -7,6 +7,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.util.CommandRegistrar;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.awt.Color;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandDescription("Run it and see what it will do \uD83E\uDD14")
 @CommandUsage("rakija")
 @CommandAliases("rakija")
+@MarkGuildOnly
 public class CommandRakija extends Command
 {
 

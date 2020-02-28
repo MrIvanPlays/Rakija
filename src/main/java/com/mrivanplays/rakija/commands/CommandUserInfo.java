@@ -8,6 +8,7 @@ import com.mrivanplays.jdcf.args.FailReason;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandDescription(
         "Shows various data about the user, who have run the command, or if arguments specified, the user mentioned/user with the specified id")
 @CommandAliases("userinfo")
+@MarkGuildOnly
 public class CommandUserInfo extends Command
 {
 

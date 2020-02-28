@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.BotUtils;
 import com.mrivanplays.rakija.util.CommandRegistrar;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandUsage("createticket [reason]")
 @CommandDescription("Creates a new ticket")
 @CommandAliases("createticket")
+@MarkGuildOnly
 public class CommandCreateTicket extends Command
 {
 

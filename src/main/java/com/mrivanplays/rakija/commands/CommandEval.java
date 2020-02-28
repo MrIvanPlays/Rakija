@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 @CommandUsage("eval [code]")
 @CommandDescription("Takes groovy code and evaluates it")
 @CommandAliases("eval")
-@MarkGuildOnly
 public class CommandEval extends Command
 {
 

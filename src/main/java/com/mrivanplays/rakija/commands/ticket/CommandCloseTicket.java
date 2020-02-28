@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.Bot;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.io.File;
@@ -29,6 +30,7 @@ import org.jsoup.nodes.Element;
 @CommandDescription("Closes the ticket where it was ran")
 @CommandUsage("closeticket")
 @CommandAliases("closeticket")
+@MarkGuildOnly
 public class CommandCloseTicket extends Command
 {
 

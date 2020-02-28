@@ -6,6 +6,7 @@ import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.data.CommandAliases;
 import com.mrivanplays.jdcf.data.CommandDescription;
 import com.mrivanplays.jdcf.data.CommandUsage;
+import com.mrivanplays.jdcf.data.MarkGuildOnly;
 import com.mrivanplays.rakija.util.EmbedUtil;
 import java.time.format.DateTimeFormatter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandDescription("Shows various data about the current server")
 @CommandUsage("serverinfo")
 @CommandAliases("serverinfo")
+@MarkGuildOnly
 public class CommandServerInfo extends Command
 {
 
