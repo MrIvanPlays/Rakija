@@ -9,6 +9,8 @@ import com.mrivanplays.rakija.util.EmbedUtil;
 import com.mrivanplays.rakija.util.RakijaConfig;
 import java.awt.Color;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.security.auth.login.LoginException;
@@ -16,6 +18,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
@@ -42,7 +45,7 @@ public class Bot
         executor = Executors.newScheduledThreadPool(4);
         eventWaiter = new EventWaiter(executor, false);
         httpClient = new OkHttpClient.Builder().dispatcher(new Dispatcher(executor)).build();
-        jda = new JDABuilder()
+        jda = JDABuilder.create(GatewayIntent.getIntents(32651))
                 .setToken(config.getString("token"))
                 .setAutoReconnect(true)
                 .setActivity(Activity.listening("@Rakija help"))

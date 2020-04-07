@@ -4,6 +4,7 @@ import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.CommandManager;
 import com.mrivanplays.jdcf.builtin.CommandShutdown;
+import com.mrivanplays.jdcf.builtin.DefaultFailReasonHandler;
 import com.mrivanplays.jdcf.settings.CommandSettings;
 import com.mrivanplays.jdcf.settings.prefix.PrefixHandler;
 import com.mrivanplays.jdcf.translation.TranslationCollector;
@@ -55,6 +56,7 @@ public class CommandRegistrar
         settings.setLogExecutedCommands(bot.getConfig().getBoolean("logExecutedCommands"));
         settings.setCommandExecuteChannel(jda.getTextChannelById(bot.getConfig().getLong("commandsChannel")));
         settings.setAllowDMSCommands(true);
+        settings.setFailReasonHandler(new DefaultFailReasonHandler());
         CommandRegistrar.commandManager = new CommandManager(jda, settings);
 
         commandManager.registerCommands(

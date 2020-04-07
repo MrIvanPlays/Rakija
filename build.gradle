@@ -29,7 +29,7 @@ configurations.all {
 dependencies {
     implementation group: 'com.mrivanplays', name: 'yalifslf4j-base', version: '1.0.4-SNAPSHOT'
     implementation group: 'com.mrivanplays', name: 'yalifslf4j-configprovider-jackson', version: '1.0.4-SNAPSHOT'
-    implementation(group: 'net.dv8tion', name: 'JDA', version: '4.1.1_108') {
+    implementation(group: 'net.dv8tion', name: 'JDA', version: '4.1.1_133') {
         exclude module: 'slf4j-api'
     }
     implementation(group: 'com.jagrosh', name: 'jda-utilities', version: '3.0.2') {
