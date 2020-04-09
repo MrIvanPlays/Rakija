@@ -39,7 +39,7 @@ dependencies {
     }
 
     implementation group: 'com.sedmelluq', name: 'lavaplayer', version: '1.3.34'
-    implementation group: 'com.mrivanplays', name: 'JDCF', version: '1.0.5-SNAPSHOT'
+    implementation group: 'com.mrivanplays', name: 'JDCF', version: '1.0.6-SNAPSHOT'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
     implementation(group: 'com.mrivanplays', name: 'BinClient', version: '1.0.1-SNAPSHOT') {
         exclude module: 'okhttp'

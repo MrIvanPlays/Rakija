@@ -1,8 +1,9 @@
 package com.mrivanplays.rakija.util;
 
-import com.mrivanplays.jdcf.Command;
 import com.mrivanplays.jdcf.CommandExecutionContext;
 import com.mrivanplays.jdcf.CommandManager;
+import com.mrivanplays.jdcf.RegisteredCommand;
+import com.mrivanplays.jdcf.args.CommandArguments;
 import com.mrivanplays.jdcf.builtin.CommandShutdown;
 import com.mrivanplays.jdcf.builtin.DefaultFailReasonHandler;
 import com.mrivanplays.jdcf.settings.CommandSettings;
@@ -19,6 +20,8 @@ import com.mrivanplays.rakija.commands.ticket.CommandCloseTicket;
 import com.mrivanplays.rakija.commands.ticket.CommandCreateTicket;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -81,7 +84,18 @@ public class CommandRegistrar
 
     public static boolean dispatchCommand(CommandExecutionContext context, String commandLine)
     {
-        return commandManager.dispatchCommand(context.getJda(), context.getGuild(), context.getTextChannel(), context.getMember(), commandLine);
+        // people would ask me why you are killing your bot smh
+        // like I am the lead developer of JDCF, and i'm against dispatching commands like this
+        // but still doing it in my own bot
+        // well, the ecosystem of Rakija is like that, and so I can't just copy paste the command smh
+        // plus the fact i use this method in 2 of Rakija's commands to execute 2 different commands
+        // what i'm doing no one should do
+        String[] lineSplit = commandLine.split(" ");
+        String name = lineSplit[0];
+        String[] args = Arrays.copyOfRange(lineSplit, 1, lineSplit.length);
+        Optional<RegisteredCommand> commandOptional = commandManager.getCommand(name);
+        return commandOptional.map(registeredCommand ->
+                registeredCommand.execute(context, new CommandArguments(context, args))).orElse(false);
     }
 
     private static void musicCommands(Bot bot, CommandSettings settings)
